@@ -24,6 +24,7 @@ class Settings(BaseSettings):
     # CORS
     CORS_ORIGINS: List[str] = ["http://localhost:3000", "http://localhost:5173"]
     ALLOWED_HOSTS: List[str] = ["localhost", "127.0.0.1"]
+    FRONTEND_URL: str = "http://localhost:3000"
 
     # Database - PostgreSQL
     DATABASE_URL: str = "postgresql+asyncpg://lexikor:lexikor_password@localhost:5432/lexikor_db"

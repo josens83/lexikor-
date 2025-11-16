@@ -45,6 +45,10 @@ export const authAPI = {
   }),
   getMe: () => api.get('/api/v1/auth/me'),
   logout: () => api.post('/api/v1/auth/logout'),
+  updateProfile: (data: any) => api.put('/api/v1/auth/me', data),
+  changePassword: (data: any) => api.post('/api/v1/auth/change-password', data),
+  toggleMFA: () => api.post('/api/v1/auth/toggle-mfa'),
+  deleteAccount: () => api.delete('/api/v1/auth/me'),
 }
 
 // Chat API

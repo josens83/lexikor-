@@ -233,3 +233,105 @@ async def logout(current_user: User = Depends(get_current_active_user)):
     Logout user (client should delete the token)
     """
     return {"message": "Successfully logged out"}
+
+
+# Settings endpoints
+class UserUpdate(BaseModel):
+    full_name: Optional[str] = None
+    phone: Optional[str] = None
+
+
+class PasswordChange(BaseModel):
+    current_password: str
+    new_password: str
+
+
+@router.put("/me", response_model=UserResponse)
+async def update_profile(
+    user_update: UserUpdate,
+    current_user: User = Depends(get_current_active_user),
+    db: AsyncSession = Depends(get_db)
+):
+    """
+    Update user profile
+    """
+    if user_update.full_name is not None:
+        current_user.full_name = user_update.full_name
+
+    if user_update.phone is not None:
+        current_user.phone = user_update.phone
+
+    current_user.updated_at = datetime.utcnow()
+
+    await db.commit()
+    await db.refresh(current_user)
+
+    return current_user
+
+
+@router.post("/change-password")
+async def change_password(
+    password_data: PasswordChange,
+    current_user: User = Depends(get_current_active_user),
+    db: AsyncSession = Depends(get_db)
+):
+    """
+    Change user password
+    """
+    # Verify current password
+    if not verify_password(password_data.current_password, current_user.hashed_password):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Current password is incorrect"
+        )
+
+    # Validate new password
+    if len(password_data.new_password) < 8:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="New password must be at least 8 characters"
+        )
+
+    # Update password
+    current_user.hashed_password = get_password_hash(password_data.new_password)
+    current_user.updated_at = datetime.utcnow()
+
+    await db.commit()
+
+    return {"message": "Password changed successfully"}
+
+
+@router.post("/toggle-mfa")
+async def toggle_mfa(
+    current_user: User = Depends(get_current_active_user),
+    db: AsyncSession = Depends(get_db)
+):
+    """
+    Toggle MFA (Two-Factor Authentication)
+    """
+    current_user.mfa_enabled = not current_user.mfa_enabled
+    current_user.updated_at = datetime.utcnow()
+
+    await db.commit()
+
+    return {
+        "mfa_enabled": current_user.mfa_enabled,
+        "message": f"MFA {'enabled' if current_user.mfa_enabled else 'disabled'} successfully"
+    }
+
+
+@router.delete("/me")
+async def delete_account(
+    current_user: User = Depends(get_current_active_user),
+    db: AsyncSession = Depends(get_db)
+):
+    """
+    Delete user account
+    """
+    # Soft delete - mark as inactive
+    current_user.is_active = False
+    current_user.updated_at = datetime.utcnow()
+
+    await db.commit()
+
+    return {"message": "Account deleted successfully"}

@@ -53,7 +53,7 @@ const Settings = () => {
   const handleUpdateProfile = async (values: any) => {
     setSaving(true)
     try {
-      // TODO: Implement profile update API
+      await authAPI.updateProfile(values)
       message.success('프로필이 업데이트되었습니다')
       await loadProfile()
     } catch (error) {
@@ -71,11 +71,14 @@ const Settings = () => {
 
     setSaving(true)
     try {
-      // TODO: Implement password change API
+      await authAPI.changePassword({
+        current_password: values.current_password,
+        new_password: values.new_password
+      })
       message.success('비밀번호가 변경되었습니다')
       passwordForm.resetFields()
-    } catch (error) {
-      message.error('비밀번호 변경에 실패했습니다')
+    } catch (error: any) {
+      message.error(error.response?.data?.detail || '비밀번호 변경에 실패했습니다')
     } finally {
       setSaving(false)
     }
@@ -91,7 +94,7 @@ const Settings = () => {
       cancelText: '취소',
       onOk: async () => {
         try {
-          // TODO: Implement MFA toggle API
+          await authAPI.toggleMFA()
           message.success(
             profile?.mfa_enabled
               ? '2단계 인증이 비활성화되었습니다'
@@ -122,9 +125,11 @@ const Settings = () => {
       cancelText: '취소',
       onOk: async () => {
         try {
-          // TODO: Implement account deletion API
+          await authAPI.deleteAccount()
           message.success('계정이 삭제되었습니다')
-          // Redirect to login
+          // Clear tokens and redirect to login
+          localStorage.removeItem('access_token')
+          localStorage.removeItem('refresh_token')
           window.location.href = '/login'
         } catch (error) {
           message.error('계정 삭제에 실패했습니다')
