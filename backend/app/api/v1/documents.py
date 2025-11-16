@@ -107,16 +107,20 @@ async def upload_document(
 
     # Check document limit
     if current_user.subscription:
-        result = await db.execute(
-            select(Document).where(Document.owner_id == current_user.id)
-        )
-        doc_count = len(result.scalars().all())
+        document_limit = current_user.subscription.document_limit
 
-        if doc_count >= current_user.subscription.document_limit:
-            raise HTTPException(
-                status_code=status.HTTP_402_PAYMENT_REQUIRED,
-                detail="Document limit exceeded. Please upgrade your plan."
+        # -1 means unlimited
+        if document_limit != -1:
+            result = await db.execute(
+                select(Document).where(Document.owner_id == current_user.id)
             )
+            doc_count = len(result.scalars().all())
+
+            if doc_count >= document_limit:
+                raise HTTPException(
+                    status_code=status.HTTP_402_PAYMENT_REQUIRED,
+                    detail="Document limit exceeded. Please upgrade your plan."
+                )
 
     # Create upload directory
     upload_dir = Path(settings.UPLOAD_DIR) / str(current_user.id)
