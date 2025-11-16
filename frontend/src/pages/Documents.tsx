@@ -4,7 +4,7 @@ import { UploadOutlined, FileTextOutlined, EyeOutlined, DeleteOutlined } from '@
 import type { UploadProps } from 'antd'
 import { documentsAPI } from '../services/api'
 
-const { Content } = Layout
+// Remove Content from Layout import as MainLayout provides it
 const { Title, Text, Paragraph } = Typography
 
 interface Document {
@@ -195,8 +195,7 @@ const Documents = () => {
   ]
 
   return (
-    <Layout style={{ minHeight: '100vh', background: '#f0f2f5' }}>
-      <Content style={{ padding: '24px' }}>
+    <div style={{ padding: '24px', background: '#f0f2f5', minHeight: 'calc(100vh - 64px)' }}>
         <div style={{ maxWidth: 1400, margin: '0 auto' }}>
           <Row gutter={[16, 16]} style={{ marginBottom: '24px' }}>
             <Col span={24}>
@@ -284,8 +283,7 @@ const Documents = () => {
             </Space>
           )}
         </Modal>
-      </Content>
-    </Layout>
+    </div>
   )
 }
 

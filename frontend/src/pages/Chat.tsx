@@ -5,7 +5,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import ReactMarkdown from 'react-markdown'
 import { chatAPI } from '../services/api'
 
-const { Content, Sider } = Layout
+const { Sider } = Layout
 const { TextArea } = Input
 const { Title, Text } = Typography
 
@@ -163,7 +163,7 @@ const Chat = () => {
   }
 
   return (
-    <Layout style={{ minHeight: '100vh', background: '#f0f2f5' }}>
+    <Layout style={{ minHeight: 'calc(100vh - 64px)', background: '#f0f2f5' }}>
       <Sider width={300} style={{ background: '#fff', padding: '16px' }}>
         <Space direction="vertical" style={{ width: '100%' }} size="middle">
           <Button
@@ -232,8 +232,8 @@ const Chat = () => {
         </Space>
       </Sider>
 
-      <Layout>
-        <Content style={{ padding: '24px' }}>
+      <Layout style={{ background: '#f0f2f5' }}>
+        <div style={{ padding: '24px' }}>
           <Card
             title={
               <Space>
@@ -326,7 +326,7 @@ const Chat = () => {
               </Button>
             </Space.Compact>
           </Card>
-        </Content>
+        </div>
       </Layout>
     </Layout>
   )

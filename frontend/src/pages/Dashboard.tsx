@@ -1,11 +1,10 @@
 import { useEffect, useState } from 'react'
-import { Layout, Card, Row, Col, Statistic, Typography, Button, List } from 'antd'
+import { Card, Row, Col, Statistic, Typography, Button, List } from 'antd'
 import { FileTextOutlined, MessageOutlined, SearchOutlined, ArrowUpOutlined } from '@ant-design/icons'
 import { useNavigate } from 'react-router-dom'
 import { analyticsAPI } from '../services/api'
 
 const { Title } = Typography
-const { Content } = Layout
 
 const Dashboard = () => {
   const navigate = useNavigate()
@@ -34,9 +33,8 @@ const Dashboard = () => {
   ]
 
   return (
-    <Layout style={{ minHeight: '100vh', background: '#f0f2f5' }}>
-      <Content style={{ padding: '24px' }}>
-        <div style={{ maxWidth: 1200, margin: '0 auto' }}>
+    <div style={{ padding: '24px', background: '#f0f2f5', minHeight: 'calc(100vh - 64px)' }}>
+      <div style={{ maxWidth: 1200, margin: '0 auto' }}>
           <Title level={2}>대시보드</Title>
 
           <Row gutter={[16, 16]} style={{ marginBottom: '24px' }}>
@@ -121,9 +119,8 @@ const Dashboard = () => {
               </Card>
             </Col>
           </Row>
-        </div>
-      </Content>
-    </Layout>
+      </div>
+    </div>
   )
 }
 
