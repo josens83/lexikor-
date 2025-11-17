@@ -7,6 +7,7 @@ import ForgotPasswordPage from './pages/ForgotPassword'
 import ResetPasswordPage from './pages/ResetPassword'
 import TermsPage from './pages/Terms'
 import PrivacyPage from './pages/Privacy'
+import FAQPage from './pages/FAQ'
 import DashboardPage from './pages/Dashboard'
 import ChatPage from './pages/Chat'
 import DocumentsPage from './pages/Documents'
@@ -22,7 +23,7 @@ function App() {
   const location = useLocation()
 
   // Pages that don't need the main layout
-  const publicPages = ['/', '/login', '/register', '/verify-email', '/forgot-password', '/reset-password', '/terms', '/privacy']
+  const publicPages = ['/', '/login', '/register', '/verify-email', '/forgot-password', '/reset-password', '/terms', '/privacy', '/faq']
   const shouldUseLayout = !publicPages.includes(location.pathname)
 
   return (
@@ -36,6 +37,7 @@ function App() {
       <Route path="/reset-password" element={<ResetPasswordPage />} />
       <Route path="/terms" element={<TermsPage />} />
       <Route path="/privacy" element={<PrivacyPage />} />
+      <Route path="/faq" element={<FAQPage />} />
 
       {/* Protected routes with MainLayout */}
       <Route path="/dashboard" element={

@@ -1,0 +1,18 @@
+# https://www.robotstxt.org/robotstxt.html
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://lexikor.ai/sitemap.xml
+
+# Crawl delay (optional)
+Crawl-delay: 1
+
+# Disallow admin/private pages
+Disallow: /dashboard
+Disallow: /settings
+Disallow: /billing
+Disallow: /chat
+Disallow: /documents
+Disallow: /research
+Disallow: /templates
