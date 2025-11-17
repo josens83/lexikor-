@@ -25,7 +25,9 @@ const ResearchPage = lazy(() => import('./pages/Research'))
 const TemplatesPage = lazy(() => import('./pages/Templates'))
 const BillingPage = lazy(() => import('./pages/Billing'))
 const BillingHistoryPage = lazy(() => import('./pages/BillingHistory'))
+const UsageAnalyticsPage = lazy(() => import('./pages/UsageAnalytics'))
 const SettingsPage = lazy(() => import('./pages/Settings'))
+const NotFoundPage = lazy(() => import('./pages/NotFound'))
 
 // Loading fallback component
 const LoadingFallback = () => (
@@ -97,6 +99,11 @@ function App() {
             <MainLayout><TemplatesPage /></MainLayout>
           </PrivateRoute>
         } />
+        <Route path="/analytics" element={
+          <PrivateRoute>
+            <MainLayout><UsageAnalyticsPage /></MainLayout>
+          </PrivateRoute>
+        } />
         <Route path="/billing" element={
           <PrivateRoute>
             <MainLayout><BillingPage /></MainLayout>
@@ -113,8 +120,8 @@ function App() {
           </PrivateRoute>
         } />
 
-        {/* Fallback */}
-        <Route path="*" element={<Navigate to="/" replace />} />
+        {/* Fallback - 404 Not Found */}
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </Suspense>
   )

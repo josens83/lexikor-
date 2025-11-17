@@ -6,6 +6,7 @@ import {
   FileTextOutlined,
   SearchOutlined,
   FormOutlined,
+  BarChartOutlined,
   CreditCardOutlined,
   SettingOutlined,
   UserOutlined,
@@ -14,6 +15,7 @@ import {
 import { useNavigate, useLocation } from 'react-router-dom'
 import type { MenuProps } from 'antd'
 import NotificationCenter from './NotificationCenter'
+import FeedbackWidget from './FeedbackWidget'
 
 const { Header, Sider, Content } = Layout
 const { Text } = Typography
@@ -71,6 +73,12 @@ const MainLayout = ({ children }: MainLayoutProps) => {
       icon: <FormOutlined />,
       label: <span data-tour="templates">문서 템플릿</span>,
       onClick: () => navigate('/templates')
+    },
+    {
+      key: '/analytics',
+      icon: <BarChartOutlined />,
+      label: <span data-tour="analytics">사용량 분석</span>,
+      onClick: () => navigate('/analytics')
     },
     {
       type: 'divider'
@@ -211,6 +219,7 @@ const MainLayout = ({ children }: MainLayoutProps) => {
               {location.pathname === '/documents' && '문서 관리'}
               {location.pathname === '/research' && '법률 검색'}
               {location.pathname === '/templates' && '문서 템플릿'}
+              {location.pathname === '/analytics' && '사용량 분석'}
               {location.pathname === '/billing' && '구독 & 결제'}
               {location.pathname === '/settings' && '설정'}
             </Text>
@@ -240,6 +249,9 @@ const MainLayout = ({ children }: MainLayoutProps) => {
         <Content style={{ margin: 0, overflow: 'initial' }}>
           {children}
         </Content>
+
+        {/* Feedback Widget - Floating button */}
+        <FeedbackWidget />
       </Layout>
     </Layout>
   )
