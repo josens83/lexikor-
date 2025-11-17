@@ -24,6 +24,7 @@ const DocumentsPage = lazy(() => import('./pages/Documents'))
 const ResearchPage = lazy(() => import('./pages/Research'))
 const TemplatesPage = lazy(() => import('./pages/Templates'))
 const BillingPage = lazy(() => import('./pages/Billing'))
+const BillingHistoryPage = lazy(() => import('./pages/BillingHistory'))
 const SettingsPage = lazy(() => import('./pages/Settings'))
 
 // Loading fallback component
@@ -99,6 +100,11 @@ function App() {
         <Route path="/billing" element={
           <PrivateRoute>
             <MainLayout><BillingPage /></MainLayout>
+          </PrivateRoute>
+        } />
+        <Route path="/billing/history" element={
+          <PrivateRoute>
+            <MainLayout><BillingHistoryPage /></MainLayout>
           </PrivateRoute>
         } />
         <Route path="/settings" element={

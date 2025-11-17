@@ -13,7 +13,7 @@ import time
 
 from app.core.config import settings
 from app.core.security import RateLimitMiddleware, SecurityHeadersMiddleware
-from app.api.v1 import auth, chat, documents, research, templates, analytics, billing
+from app.api.v1 import auth, chat, documents, research, templates, analytics, billing, health
 from app.db.session import engine
 from app.db.base import Base
 
@@ -104,18 +104,6 @@ async def global_exception_handler(request: Request, exc: Exception):
     )
 
 
-# Health check endpoint
-@app.get("/health", tags=["Health"])
-async def health_check():
-    """Health check endpoint"""
-    return {
-        "status": "healthy",
-        "service": "LexiKor API",
-        "version": "1.0.0",
-        "environment": settings.ENVIRONMENT
-    }
-
-
 # Root endpoint
 @app.get("/", tags=["Root"])
 async def root():
@@ -129,6 +117,10 @@ async def root():
 
 
 # Include routers
+# Health & Monitoring (no prefix - at root level)
+app.include_router(health.router, tags=["Health & Monitoring"])
+
+# API v1 routes
 app.include_router(auth.router, prefix=f"{settings.API_V1_PREFIX}/auth", tags=["Authentication"])
 app.include_router(chat.router, prefix=f"{settings.API_V1_PREFIX}/chat", tags=["Chat"])
 app.include_router(documents.router, prefix=f"{settings.API_V1_PREFIX}/documents", tags=["Documents"])

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Card, Row, Col, Typography, Button, Space, Progress, Statistic, Tag, Modal, message, List, Descriptions } from 'antd'
-import { CreditCardOutlined, CheckCircleOutlined, CloseCircleOutlined, TrophyOutlined, RocketOutlined, StarOutlined } from '@ant-design/icons'
+import { CreditCardOutlined, CheckCircleOutlined, CloseCircleOutlined, TrophyOutlined, RocketOutlined, StarOutlined, HistoryOutlined } from '@ant-design/icons'
+import { useNavigate } from 'react-router-dom'
 import { billingAPI } from '../services/api'
 
 const { Title, Text, Paragraph } = Typography
@@ -36,6 +37,7 @@ interface UsageStats {
 }
 
 const Billing = () => {
+  const navigate = useNavigate()
   const [subscription, setSubscription] = useState<Subscription | null>(null)
   const [usage, setUsage] = useState<UsageStats | null>(null)
   const [loading, setLoading] = useState(false)
@@ -184,10 +186,20 @@ const Billing = () => {
         <Row gutter={[16, 16]}>
           <Col span={24}>
             <Card>
-              <Title level={2}>결제 및 구독</Title>
-              <Paragraph type="secondary">
-                요금제를 선택하고 구독을 관리하세요. 언제든지 업그레이드하거나 취소할 수 있습니다.
-              </Paragraph>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                <div>
+                  <Title level={2} style={{ marginBottom: 8 }}>결제 및 구독</Title>
+                  <Paragraph type="secondary" style={{ marginBottom: 0 }}>
+                    요금제를 선택하고 구독을 관리하세요. 언제든지 업그레이드하거나 취소할 수 있습니다.
+                  </Paragraph>
+                </div>
+                <Button
+                  icon={<HistoryOutlined />}
+                  onClick={() => navigate('/billing/history')}
+                >
+                  결제 내역 보기
+                </Button>
+              </div>
             </Card>
           </Col>
         </Row>
