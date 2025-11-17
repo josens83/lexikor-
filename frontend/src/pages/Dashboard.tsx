@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react'
-import { Card, Row, Col, Statistic, Typography, Button, List, Alert, message, Progress } from 'antd'
-import { FileTextOutlined, MessageOutlined, SearchOutlined, ArrowUpOutlined, MailOutlined, CrownOutlined } from '@ant-design/icons'
+import { Card, Row, Col, Statistic, Typography, Button, List, Alert, message, Progress, FloatButton } from 'antd'
+import { FileTextOutlined, MessageOutlined, SearchOutlined, ArrowUpOutlined, MailOutlined, CrownOutlined, QuestionCircleOutlined } from '@ant-design/icons'
 import { useNavigate } from 'react-router-dom'
 import { analyticsAPI, authAPI, billingAPI } from '../services/api'
 import { DashboardSkeleton } from '../components/LoadingSkeleton'
+import OnboardingChecklist from '../components/OnboardingChecklist'
+import OnboardingTour from '../components/OnboardingTour'
 
 const { Title } = Typography
 
@@ -16,10 +18,27 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true)
   const [resendingEmail, setResendingEmail] = useState(false)
 
+  // Onboarding states
+  const [showOnboarding, setShowOnboarding] = useState(false)
+  const [showTour, setShowTour] = useState(false)
+
   useEffect(() => {
     loadDashboardData()
     loadUserInfo()
     loadSubscriptionInfo()
+
+    // Check if first time user
+    const hasSeenOnboarding = localStorage.getItem('hasSeenOnboarding')
+    const hasSeenTour = localStorage.getItem('hasSeenTour')
+
+    if (!hasSeenOnboarding) {
+      setShowOnboarding(true)
+    }
+
+    if (!hasSeenTour) {
+      // Show tour after a short delay
+      setTimeout(() => setShowTour(true), 1000)
+    }
   }, [])
 
   const loadDashboardData = async () => {
@@ -65,6 +84,20 @@ const Dashboard = () => {
     } finally {
       setResendingEmail(false)
     }
+  }
+
+  const handleDismissOnboarding = () => {
+    localStorage.setItem('hasSeenOnboarding', 'true')
+    setShowOnboarding(false)
+  }
+
+  const handleFinishTour = () => {
+    localStorage.setItem('hasSeenTour', 'true')
+    setShowTour(false)
+  }
+
+  const handleRestartTour = () => {
+    setShowTour(true)
   }
 
   const quickActions = [
@@ -163,6 +196,11 @@ const Dashboard = () => {
             })()
           )}
 
+          {/* 온보딩 체크리스트 */}
+          {showOnboarding && user && (
+            <OnboardingChecklist user={user} onDismiss={handleDismissOnboarding} />
+          )}
+
           <Row gutter={[16, 16]} style={{ marginBottom: '24px' }}>
             <Col xs={24} sm={12} lg={6}>
               <Card>
@@ -246,6 +284,18 @@ const Dashboard = () => {
             </Col>
           </Row>
       </div>
+
+      {/* Onboarding Tour */}
+      <OnboardingTour open={showTour} onFinish={handleFinishTour} />
+
+      {/* Help Button - Floating */}
+      <FloatButton
+        icon={<QuestionCircleOutlined />}
+        type="primary"
+        style={{ right: 24, bottom: 24 }}
+        tooltip="도움말"
+        onClick={handleRestartTour}
+      />
     </div>
   )
 }

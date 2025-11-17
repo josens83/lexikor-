@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Layout, Menu, Avatar, Dropdown, Space, Typography, Badge } from 'antd'
+import { Layout, Menu, Avatar, Dropdown, Space, Typography } from 'antd'
 import {
   DashboardOutlined,
   MessageOutlined,
@@ -9,11 +9,11 @@ import {
   CreditCardOutlined,
   SettingOutlined,
   UserOutlined,
-  LogoutOutlined,
-  BellOutlined
+  LogoutOutlined
 } from '@ant-design/icons'
 import { useNavigate, useLocation } from 'react-router-dom'
 import type { MenuProps } from 'antd'
+import NotificationCenter from './NotificationCenter'
 
 const { Header, Sider, Content } = Layout
 const { Text } = Typography
@@ -45,31 +45,31 @@ const MainLayout = ({ children }: MainLayoutProps) => {
     {
       key: '/dashboard',
       icon: <DashboardOutlined />,
-      label: '대시보드',
+      label: <span data-tour="dashboard">대시보드</span>,
       onClick: () => navigate('/dashboard')
     },
     {
       key: '/chat',
       icon: <MessageOutlined />,
-      label: 'AI 채팅',
+      label: <span data-tour="chat">AI 채팅</span>,
       onClick: () => navigate('/chat')
     },
     {
       key: '/documents',
       icon: <FileTextOutlined />,
-      label: '문서 관리',
+      label: <span data-tour="documents">문서 관리</span>,
       onClick: () => navigate('/documents')
     },
     {
       key: '/research',
       icon: <SearchOutlined />,
-      label: '법률 검색',
+      label: <span data-tour="research">법률 검색</span>,
       onClick: () => navigate('/research')
     },
     {
       key: '/templates',
       icon: <FormOutlined />,
-      label: '문서 템플릿',
+      label: <span data-tour="templates">문서 템플릿</span>,
       onClick: () => navigate('/templates')
     },
     {
@@ -84,7 +84,7 @@ const MainLayout = ({ children }: MainLayoutProps) => {
     {
       key: '/settings',
       icon: <SettingOutlined />,
-      label: '설정',
+      label: <span data-tour="settings">설정</span>,
       onClick: () => navigate('/settings')
     }
   ]
@@ -219,9 +219,7 @@ const MainLayout = ({ children }: MainLayoutProps) => {
           {/* User Actions */}
           <Space size="large">
             {/* Notifications */}
-            <Badge count={0}>
-              <BellOutlined style={{ fontSize: '20px', cursor: 'pointer' }} />
-            </Badge>
+            <NotificationCenter />
 
             {/* User Menu */}
             {user && (
