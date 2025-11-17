@@ -192,7 +192,16 @@ async def create_checkout_session(
 async def stripe_webhook(request: Request, db: AsyncSession = Depends(get_db)):
     """
     Handle Stripe webhooks
+
+    Handles the following events:
+    - checkout.session.completed: When a user completes a purchase
+    - invoice.payment_succeeded: When a recurring payment succeeds
+    - customer.subscription.updated: When subscription is modified
+    - customer.subscription.deleted: When subscription is cancelled
     """
+    if not settings.STRIPE_WEBHOOK_SECRET:
+        return {"status": "webhook_not_configured"}
+
     payload = await request.body()
     sig_header = request.headers.get('stripe-signature')
 
@@ -205,23 +214,139 @@ async def stripe_webhook(request: Request, db: AsyncSession = Depends(get_db)):
     except stripe.error.SignatureVerificationError:
         raise HTTPException(status_code=400, detail="Invalid signature")
 
-    # Handle different event types
-    if event['type'] == 'checkout.session.completed':
-        session = event['data']['object']
-        # Update subscription in database
-        # TODO: Implement subscription update logic
+    event_type = event['type']
+    data_object = event['data']['object']
 
-    elif event['type'] == 'invoice.payment_succeeded':
-        # Reset monthly usage
-        # TODO: Implement usage reset logic
-        pass
+    try:
+        # Handle checkout.session.completed
+        if event_type == 'checkout.session.completed':
+            session = data_object
 
-    elif event['type'] == 'customer.subscription.deleted':
-        # Handle subscription cancellation
-        # TODO: Implement cancellation logic
-        pass
+            # Get user from metadata
+            user_id = int(session['metadata']['user_id'])
+            plan_str = session['metadata']['plan']
 
-    return {"status": "success"}
+            # Find user
+            result = await db.execute(select(User).where(User.id == user_id))
+            user = result.scalar_one_or_none()
+
+            if not user or not user.subscription:
+                raise Exception(f"User {user_id} or subscription not found")
+
+            # Map plan string to enum
+            plan = SubscriptionPlan(plan_str)
+
+            # Update subscription
+            subscription = user.subscription
+            subscription.plan = plan
+            subscription.status = SubscriptionStatus.ACTIVE
+            subscription.stripe_customer_id = session.get('customer')
+            subscription.stripe_subscription_id = session.get('subscription')
+            subscription.current_period_start = datetime.utcnow()
+            subscription.current_period_end = datetime.utcnow() + timedelta(days=30)
+
+            # Set limits based on plan
+            if plan == SubscriptionPlan.PROFESSIONAL:
+                subscription.query_limit = -1  # Unlimited
+                subscription.document_limit = 100
+                subscription.price = settings.PRO_PLAN_MONTHLY_PRICE
+            elif plan == SubscriptionPlan.ENTERPRISE:
+                subscription.query_limit = -1  # Unlimited
+                subscription.document_limit = -1  # Unlimited
+                subscription.price = 500000  # Example price
+
+            await db.commit()
+            print(f"✅ Subscription activated for user {user_id}, plan: {plan}")
+
+        # Handle invoice.payment_succeeded
+        elif event_type == 'invoice.payment_succeeded':
+            invoice = data_object
+            subscription_id = invoice.get('subscription')
+
+            if subscription_id:
+                # Find subscription by Stripe subscription ID
+                result = await db.execute(
+                    select(Subscription).where(
+                        Subscription.stripe_subscription_id == subscription_id
+                    )
+                )
+                subscription = result.scalar_one_or_none()
+
+                if subscription:
+                    # Reset monthly usage
+                    subscription.queries_used = 0
+                    subscription.documents_count = 0
+                    subscription.current_period_start = datetime.utcnow()
+                    subscription.current_period_end = datetime.utcnow() + timedelta(days=30)
+                    subscription.status = SubscriptionStatus.ACTIVE
+
+                    await db.commit()
+                    print(f"✅ Monthly usage reset for subscription {subscription.id}")
+
+        # Handle customer.subscription.updated
+        elif event_type == 'customer.subscription.updated':
+            stripe_subscription = data_object
+            subscription_id = stripe_subscription['id']
+
+            # Find subscription
+            result = await db.execute(
+                select(Subscription).where(
+                    Subscription.stripe_subscription_id == subscription_id
+                )
+            )
+            subscription = result.scalar_one_or_none()
+
+            if subscription:
+                # Update status based on Stripe status
+                stripe_status = stripe_subscription['status']
+                if stripe_status == 'active':
+                    subscription.status = SubscriptionStatus.ACTIVE
+                elif stripe_status == 'canceled':
+                    subscription.status = SubscriptionStatus.CANCELLED
+                    subscription.cancelled_at = datetime.utcnow()
+                elif stripe_status == 'past_due':
+                    subscription.status = SubscriptionStatus.EXPIRED
+
+                await db.commit()
+                print(f"✅ Subscription {subscription.id} updated to {subscription.status}")
+
+        # Handle customer.subscription.deleted
+        elif event_type == 'customer.subscription.deleted':
+            stripe_subscription = data_object
+            subscription_id = stripe_subscription['id']
+
+            # Find subscription
+            result = await db.execute(
+                select(Subscription).where(
+                    Subscription.stripe_subscription_id == subscription_id
+                )
+            )
+            subscription = result.scalar_one_or_none()
+
+            if subscription:
+                # Downgrade to free plan
+                subscription.plan = SubscriptionPlan.FREE
+                subscription.status = SubscriptionStatus.CANCELLED
+                subscription.cancelled_at = datetime.utcnow()
+                subscription.query_limit = settings.FREE_PLAN_QUERY_LIMIT
+                subscription.document_limit = 5
+                subscription.price = 0
+                subscription.stripe_customer_id = None
+                subscription.stripe_subscription_id = None
+
+                await db.commit()
+                print(f"✅ Subscription {subscription.id} cancelled and downgraded to FREE")
+
+        else:
+            print(f"ℹ️  Unhandled event type: {event_type}")
+
+    except Exception as e:
+        print(f"❌ Error processing webhook: {str(e)}")
+        # Don't raise - return 200 to acknowledge receipt
+        # Stripe will retry failed webhooks
+        return {"status": "error", "message": str(e)}
+
+    return {"status": "success", "event_type": event_type}
 
 
 @router.post("/cancel")

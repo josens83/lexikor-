@@ -1,14 +1,16 @@
 import { useState } from 'react'
-import { Form, Input, Button, Card, Typography, message } from 'antd'
-import { UserOutlined, LockOutlined, MailOutlined, PhoneOutlined } from '@ant-design/icons'
+import { Form, Input, Button, Card, Typography, message, Result, Alert } from 'antd'
+import { UserOutlined, LockOutlined, MailOutlined, PhoneOutlined, CheckCircleOutlined } from '@ant-design/icons'
 import { useNavigate } from 'react-router-dom'
 import { authAPI } from '../services/api'
 
-const { Title, Text } = Typography
+const { Title, Text, Paragraph } = Typography
 
 const Register = () => {
   const navigate = useNavigate()
   const [loading, setLoading] = useState(false)
+  const [registered, setRegistered] = useState(false)
+  const [userEmail, setUserEmail] = useState('')
 
   const onFinish = async (values: any) => {
     setLoading(true)
@@ -20,13 +22,87 @@ const Register = () => {
         phone: values.phone
       })
 
-      message.success('회원가입 성공! 로그인 페이지로 이동합니다.')
-      setTimeout(() => navigate('/login'), 1500)
+      setUserEmail(values.email)
+      setRegistered(true)
+      message.success('회원가입이 완료되었습니다!')
     } catch (error: any) {
       message.error(error.response?.data?.detail || '회원가입에 실패했습니다')
     } finally {
       setLoading(false)
     }
+  }
+
+  // 회원가입 완료 후 이메일 인증 안내 화면
+  if (registered) {
+    return (
+      <div style={{
+        minHeight: '100vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
+      }}>
+        <Card style={{ width: 550, boxShadow: '0 8px 16px rgba(0,0,0,0.1)' }}>
+          <Result
+            icon={<CheckCircleOutlined style={{ color: '#52c41a' }} />}
+            title="회원가입이 완료되었습니다!"
+            subTitle={
+              <div>
+                <Paragraph>
+                  <strong>{userEmail}</strong>로 인증 이메일을 발송했습니다.
+                </Paragraph>
+                <Alert
+                  message="이메일 인증이 필요합니다"
+                  description={
+                    <div>
+                      <p>• 이메일함을 확인하여 인증 링크를 클릭해주세요.</p>
+                      <p>• 인증 링크는 24시간 동안 유효합니다.</p>
+                      <p>• 이메일이 오지 않았다면 스팸함을 확인해주세요.</p>
+                    </div>
+                  }
+                  type="info"
+                  showIcon
+                  style={{ marginTop: 16, textAlign: 'left' }}
+                />
+              </div>
+            }
+            extra={[
+              <Button
+                type="primary"
+                key="login"
+                onClick={() => navigate('/login')}
+                style={{
+                  background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                  border: 'none'
+                }}
+              >
+                로그인하러 가기
+              </Button>,
+              <Button key="home" onClick={() => navigate('/')}>
+                홈으로
+              </Button>
+            ]}
+          />
+
+          <div style={{
+            marginTop: 20,
+            padding: 16,
+            background: '#f0f2f5',
+            borderRadius: 8,
+            textAlign: 'center'
+          }}>
+            <Text type="secondary" style={{ fontSize: 13 }}>
+              이메일을 받지 못하셨나요?{' '}
+              <a onClick={() => {
+                message.info('로그인 후 설정에서 인증 이메일을 재발송할 수 있습니다.')
+              }}>
+                재발송 안내
+              </a>
+            </Text>
+          </div>
+        </Card>
+      </div>
+    )
   }
 
   return (
