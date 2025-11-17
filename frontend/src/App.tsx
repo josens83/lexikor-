@@ -2,6 +2,11 @@ import { Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import LandingPage from './pages/Landing'
 import LoginPage from './pages/Login'
 import RegisterPage from './pages/Register'
+import VerifyEmailPage from './pages/VerifyEmail'
+import ForgotPasswordPage from './pages/ForgotPassword'
+import ResetPasswordPage from './pages/ResetPassword'
+import TermsPage from './pages/Terms'
+import PrivacyPage from './pages/Privacy'
 import DashboardPage from './pages/Dashboard'
 import ChatPage from './pages/Chat'
 import DocumentsPage from './pages/Documents'
@@ -17,7 +22,7 @@ function App() {
   const location = useLocation()
 
   // Pages that don't need the main layout
-  const publicPages = ['/', '/login', '/register']
+  const publicPages = ['/', '/login', '/register', '/verify-email', '/forgot-password', '/reset-password', '/terms', '/privacy']
   const shouldUseLayout = !publicPages.includes(location.pathname)
 
   return (
@@ -26,6 +31,11 @@ function App() {
       <Route path="/" element={<LandingPage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
+      <Route path="/verify-email" element={<VerifyEmailPage />} />
+      <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+      <Route path="/reset-password" element={<ResetPasswordPage />} />
+      <Route path="/terms" element={<TermsPage />} />
+      <Route path="/privacy" element={<PrivacyPage />} />
 
       {/* Protected routes with MainLayout */}
       <Route path="/dashboard" element={

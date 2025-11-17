@@ -78,6 +78,12 @@ const Login = () => {
             </Button>
           </Form.Item>
 
+          <div style={{ textAlign: 'center', marginBottom: '16px' }}>
+            <a onClick={() => navigate('/forgot-password')} style={{ color: '#1890ff' }}>
+              비밀번호를 잊으셨나요?
+            </a>
+          </div>
+
           <div style={{ textAlign: 'center' }}>
             <Text>
               계정이 없으신가요?{' '}

@@ -49,6 +49,13 @@ export const authAPI = {
   changePassword: (data: any) => api.post('/api/v1/auth/change-password', data),
   toggleMFA: () => api.post('/api/v1/auth/toggle-mfa'),
   deleteAccount: () => api.delete('/api/v1/auth/me'),
+  // Email verification
+  verifyEmail: (token: string) => api.post('/api/v1/auth/verify-email', { token }),
+  resendVerification: () => api.post('/api/v1/auth/resend-verification'),
+  // Password reset
+  forgotPassword: (email: string) => api.post('/api/v1/auth/forgot-password', { email }),
+  resetPassword: (token: string, new_password: string) =>
+    api.post('/api/v1/auth/reset-password', { token, new_password }),
 }
 
 // Chat API

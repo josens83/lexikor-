@@ -47,6 +47,14 @@ class User(Base):
     mfa_enabled = Column(Boolean, default=False)
     mfa_secret = Column(String, nullable=True)
 
+    # Email verification
+    email_verification_token = Column(String, nullable=True)
+    email_verification_token_expires = Column(DateTime(timezone=True), nullable=True)
+
+    # Password reset
+    password_reset_token = Column(String, nullable=True)
+    password_reset_token_expires = Column(DateTime(timezone=True), nullable=True)
+
     # OAuth
     google_id = Column(String, unique=True, nullable=True)
     microsoft_id = Column(String, unique=True, nullable=True)
