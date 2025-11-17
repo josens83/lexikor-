@@ -12,6 +12,7 @@ import logging
 import time
 
 from app.core.config import settings
+from app.core.security import RateLimitMiddleware, SecurityHeadersMiddleware
 from app.api.v1 import auth, chat, documents, research, templates, analytics, billing
 from app.db.session import engine
 from app.db.base import Base
@@ -54,15 +55,23 @@ app = FastAPI(
 )
 
 
+# Security Headers Middleware (add first)
+app.add_middleware(SecurityHeadersMiddleware)
+
+# Rate Limiting Middleware
+# In production, use 120 requests per minute. In development, use 300.
+rate_limit = 300 if settings.DEBUG else 120
+app.add_middleware(RateLimitMiddleware, requests_per_minute=rate_limit)
+
 # CORS Middleware
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.CORS_ORIGINS,
     allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "PATCH"],
     allow_headers=["*"],
+    expose_headers=["X-RateLimit-Limit", "X-RateLimit-Remaining", "X-Process-Time"],
 )
-
 
 # Trusted Host Middleware (Production only)
 if not settings.DEBUG:
