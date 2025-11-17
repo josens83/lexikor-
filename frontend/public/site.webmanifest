@@ -1,0 +1,30 @@
+{
+  "name": "LexiKor - AI 기반 한국형 법률 플랫폼",
+  "short_name": "LexiKor",
+  "description": "GPT-4 기반 AI 법률 어시스턴트. 판례 검색, 계약서 분석, 법률 문서 자동 생성",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#667eea",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["business", "productivity", "legal"],
+  "lang": "ko-KR",
+  "dir": "ltr",
+  "scope": "/",
+  "related_applications": [],
+  "prefer_related_applications": false
+}

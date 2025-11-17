@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LexiKor 이메일 인증</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f0f2f5;
+        }
+        .email-container {
+            max-width: 600px;
+            margin: 40px auto;
+            background-color: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .email-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 40px 20px;
+            text-align: center;
+        }
+        .logo {
+            font-size: 32px;
+            font-weight: bold;
+            color: #ffffff;
+            margin: 0;
+        }
+        .email-body {
+            padding: 40px 30px;
+        }
+        h1 {
+            color: #1f2937;
+            font-size: 24px;
+            font-weight: 600;
+            margin: 0 0 20px 0;
+        }
+        p {
+            color: #4b5563;
+            font-size: 16px;
+            line-height: 1.6;
+            margin: 0 0 20px 0;
+        }
+        .verification-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #ffffff;
+            text-decoration: none;
+            padding: 14px 32px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 16px;
+            margin: 20px 0;
+        }
+        .verification-link {
+            background-color: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            padding: 16px;
+            margin: 20px 0;
+            word-break: break-all;
+            font-size: 14px;
+            color: #6b7280;
+        }
+        .info-box {
+            background-color: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 16px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        .info-box p {
+            margin: 0;
+            color: #92400e;
+            font-size: 14px;
+        }
+        .email-footer {
+            background-color: #f9fafb;
+            padding: 30px;
+            text-align: center;
+            border-top: 1px solid #e5e7eb;
+        }
+        .footer-text {
+            color: #6b7280;
+            font-size: 14px;
+            margin: 5px 0;
+        }
+        .footer-links {
+            margin-top: 20px;
+        }
+        .footer-links a {
+            color: #667eea;
+            text-decoration: none;
+            margin: 0 10px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <div class="email-header">
+            <h1 class="logo">⚖️ LexiKor</h1>
+        </div>
+
+        <div class="email-body">
+            <h1>이메일 인증을 완료해주세요</h1>
+
+            <p>안녕하세요, <strong>{{user_name}}</strong>님!</p>
+
+            <p>
+                LexiKor 회원가입을 환영합니다. 아래 버튼을 클릭하여 이메일 인증을 완료해주세요.
+            </p>
+
+            <div style="text-align: center;">
+                <a href="{{verification_link}}" class="verification-button">
+                    이메일 인증하기
+                </a>
+            </div>
+
+            <p style="font-size: 14px; color: #6b7280; margin-top: 20px;">
+                버튼이 작동하지 않으면 아래 링크를 복사하여 브라우저에 붙여넣으세요:
+            </p>
+
+            <div class="verification-link">
+                {{verification_link}}
+            </div>
+
+            <div class="info-box">
+                <p>
+                    ⏱️ 이 인증 링크는 24시간 동안 유효합니다.<br>
+                    🔒 보안을 위해 본인이 요청하지 않은 경우 이 이메일을 무시하세요.
+                </p>
+            </div>
+
+            <p style="margin-top: 30px;">
+                감사합니다,<br>
+                <strong>LexiKor 팀</strong>
+            </p>
+        </div>
+
+        <div class="email-footer">
+            <p class="footer-text">
+                © 2024 LexiKor. All rights reserved.
+            </p>
+            <p class="footer-text">
+                서울시 강남구 | 사업자번호: 123-45-67890
+            </p>
+            <div class="footer-links">
+                <a href="https://lexikor.ai">홈페이지</a>
+                <a href="https://lexikor.ai/faq">FAQ</a>
+                <a href="https://lexikor.ai/terms">이용약관</a>
+                <a href="https://lexikor.ai/privacy">개인정보처리방침</a>
+            </div>
+            <p class="footer-text" style="margin-top: 20px;">
+                문의: support@lexikor.ai | 02-1234-5678
+            </p>
+        </div>
+    </div>
+</body>
+</html>

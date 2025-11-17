@@ -3,6 +3,7 @@ import { Card, Row, Col, Statistic, Typography, Button, List, Alert, message, Pr
 import { FileTextOutlined, MessageOutlined, SearchOutlined, ArrowUpOutlined, MailOutlined, CrownOutlined } from '@ant-design/icons'
 import { useNavigate } from 'react-router-dom'
 import { analyticsAPI, authAPI, billingAPI } from '../services/api'
+import { DashboardSkeleton } from '../components/LoadingSkeleton'
 
 const { Title } = Typography
 
@@ -71,6 +72,11 @@ const Dashboard = () => {
     { title: '문서 업로드', icon: <FileTextOutlined />, path: '/documents', color: '#52c41a' },
     { title: '판례 검색', icon: <SearchOutlined />, path: '/research', color: '#faad14' },
   ]
+
+  // Show skeleton while loading
+  if (loading) {
+    return <DashboardSkeleton />
+  }
 
   return (
     <div style={{ padding: '24px', background: '#f0f2f5', minHeight: 'calc(100vh - 64px)' }}>

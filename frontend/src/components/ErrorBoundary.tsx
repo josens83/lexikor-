@@ -1,6 +1,7 @@
 import React, { Component, ErrorInfo, ReactNode } from 'react'
 import { Result, Button, Card, Typography, Collapse } from 'antd'
 import { FrownOutlined, ReloadOutlined, HomeOutlined } from '@ant-design/icons'
+import { captureException } from '../utils/sentry'
 
 const { Text, Paragraph } = Typography
 const { Panel } = Collapse
@@ -37,8 +38,14 @@ class ErrorBoundary extends Component<Props, State> {
     // Log error to console in development
     console.error('ErrorBoundary caught an error:', error, errorInfo)
 
-    // In production, you would send this to an error reporting service like Sentry
-    // Example: Sentry.captureException(error, { extra: errorInfo })
+    // Send error to Sentry for monitoring
+    captureException(error, {
+      errorInfo: {
+        componentStack: errorInfo.componentStack
+      },
+      errorBoundary: true,
+      location: window.location.pathname
+    })
 
     this.setState({
       error,
