@@ -5,7 +5,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { message } from 'antd'
 import { billingAPI } from '@services/api.refactored'
-import type { BillingAPI } from '@types'
+import type { BillingAPI } from '@/types'
 
 /**
  * Query keys for billing-related queries

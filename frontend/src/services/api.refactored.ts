@@ -47,9 +47,6 @@ api.interceptors.request.use(
       config.headers.Authorization = `Bearer ${token}`
     }
 
-    // Add request timestamp for monitoring
-    config.metadata = { startTime: new Date() }
-
     return config
   },
   (error) => {
@@ -63,12 +60,6 @@ api.interceptors.request.use(
 
 api.interceptors.response.use(
   (response) => {
-    // Log request duration in development
-    if (import.meta.env.DEV && response.config.metadata?.startTime) {
-      const duration = new Date().getTime() - response.config.metadata.startTime.getTime()
-      console.log(`[API] ${response.config.method?.toUpperCase()} ${response.config.url} - ${duration}ms`)
-    }
-
     return response
   },
   async (error) => {

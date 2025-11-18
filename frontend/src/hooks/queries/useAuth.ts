@@ -6,8 +6,8 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { message } from 'antd'
 import { authAPI } from '@services/api.refactored'
 import { storage } from '@utils/storage'
-import { ROUTES } from '@constants'
-import type { User, AuthAPI } from '@types'
+import { ROUTES } from '@/constants'
+import type { User, AuthAPI } from '@/types'
 
 /**
  * Query keys for auth-related queries

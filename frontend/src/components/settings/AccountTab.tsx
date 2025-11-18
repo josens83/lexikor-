@@ -8,7 +8,7 @@ import { Typography } from 'antd'
 import { ExclamationCircleOutlined } from '@ant-design/icons'
 import { useDeleteAccount } from '@hooks/queries'
 import { storage } from '@utils/storage'
-import { ROUTES } from '@constants'
+import { ROUTES } from '@/constants'
 import DataExportModal from '../DataExportModal'
 
 const { Paragraph } = Typography

@@ -93,39 +93,6 @@ export function CurrentSubscriptionCard() {
         </Col>
       </Row>
 
-      {usage && (
-        <Row gutter={[24, 24]} style={{ marginTop: '24px' }}>
-          <Col xs={24} md={12}>
-            <div>
-              <Text type="secondary">AI 질의 사용량</Text>
-              <Progress
-                percent={Math.min(usage.queries.percentage, 100)}
-                status={usage.queries.percentage > 90 ? 'exception' : 'active'}
-                strokeColor={usage.queries.percentage > 90 ? '#ff4d4f' : '#1890ff'}
-              />
-              <Text type="secondary" style={{ fontSize: '12px' }}>
-                {usage.queries.used} /{' '}
-                {usage.queries.limit === -1 ? '무제한' : usage.queries.limit} 사용
-              </Text>
-            </div>
-          </Col>
-          <Col xs={24} md={12}>
-            <div>
-              <Text type="secondary">문서 분석 사용량</Text>
-              <Progress
-                percent={Math.min(usage.documents.percentage, 100)}
-                status={usage.documents.percentage > 90 ? 'exception' : 'active'}
-                strokeColor={usage.documents.percentage > 90 ? '#ff4d4f' : '#52c41a'}
-              />
-              <Text type="secondary" style={{ fontSize: '12px' }}>
-                {usage.documents.count} /{' '}
-                {usage.documents.limit === -1 ? '무제한' : usage.documents.limit} 사용
-              </Text>
-            </div>
-          </Col>
-        </Row>
-      )}
-
       {subscription.current_period_end && (
         <div style={{ marginTop: '24px' }}>
           <Descriptions column={1} size="small">

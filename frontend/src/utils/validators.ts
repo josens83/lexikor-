@@ -117,7 +117,7 @@ export const confirmPasswordRule = (
   passwordFieldName: string = 'password'
 ): Rule => ({
   validator: async (_, value) => {
-    const form = _.field.split('.')[0] // Get form instance context
+    const form = (_ as any).field.split('.')[0] // Get form instance context
     // This needs to be used with Form.useWatch or getFieldValue
     // In practice, use: ({ getFieldValue }) => ({ validator... })
     return Promise.resolve()
@@ -171,14 +171,14 @@ export function isValidFileSize(file: File): boolean {
  */
 export function isValidFileExtension(file: File): boolean {
   const ext = `.${file.name.split('.').pop()?.toLowerCase()}`
-  return VALIDATION.FILE.allowedExtensions.includes(ext)
+  return (VALIDATION.FILE.allowedExtensions as any).includes(ext)
 }
 
 /**
  * Validate file type
  */
 export function isValidFileType(file: File): boolean {
-  return VALIDATION.FILE.allowedMimeTypes.includes(file.type)
+  return (VALIDATION.FILE.allowedMimeTypes as any).includes(file.type)
 }
 
 /**

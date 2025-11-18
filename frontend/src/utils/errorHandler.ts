@@ -238,7 +238,7 @@ export async function retryWithBackoff<T>(
   for (let attempt = 0; attempt <= maxRetries; attempt++) {
     try {
       return await fn()
-    } catch (error) {
+    } catch (error: any) {
       lastError = error
 
       // Don't retry on client errors (4xx) except 408 and 429
@@ -275,7 +275,7 @@ export async function retryWithBackoff<T>(
  * Create error boundary handler
  */
 export function createErrorBoundaryHandler() {
-  return (error: Error, errorInfo: React.ErrorInfo) => {
+  return (error: Error, errorInfo: { componentStack: string }) => {
     console.error('Error Boundary caught an error:', error, errorInfo)
 
     // Log to Sentry
@@ -295,20 +295,6 @@ export function createErrorBoundaryHandler() {
       message: '오류 발생',
       description: '예상치 못한 오류가 발생했습니다. 페이지를 새로고침해주세요.',
       duration: 0, // Don't auto close
-      btn: (
-        <button
-          onClick={() => window.location.reload()}
-          style={{
-            padding: '4px 12px',
-            borderRadius: '4px',
-            border: '1px solid #d9d9d9',
-            background: '#fff',
-            cursor: 'pointer',
-          }}
-        >
-          새로고침
-        </button>
-      ),
     })
   }
 }

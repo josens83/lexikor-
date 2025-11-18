@@ -5,7 +5,7 @@
  */
 
 // Storage utilities
-export { storage, storageUtils } from './storage'
+export { storage } from './storage'
 
 // Error handling
 export { handleApiError, retryWithBackoff, isNetworkError, getErrorMessage } from './errorHandler'
@@ -18,16 +18,16 @@ export {
   formatRelativeTime,
   formatFileSize,
   formatPhoneNumber,
-  truncateText,
+  truncate,
+  formatDateTime,
 } from './formatters'
 
 // Validators
 export {
   isValidEmail,
-  isValidPhone,
+  isValidPhoneNumber,
   isValidPassword,
   getPasswordStrength,
-  requiredRule,
   requiredEmailRule,
   requiredPasswordRule,
   requiredPhoneRule,

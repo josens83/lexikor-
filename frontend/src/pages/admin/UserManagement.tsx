@@ -273,7 +273,7 @@ const UserManagement = () => {
           )}
         </div>
       ),
-      filterable: true,
+      filtered: true,
       sorter: (a, b) => a.name.localeCompare(b.name)
     },
     {

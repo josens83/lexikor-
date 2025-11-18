@@ -5,7 +5,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { message } from 'antd'
 import { documentsAPI } from '@services/api.refactored'
-import type { DocumentsAPI } from '@types'
+import type { DocumentsAPI } from '@/types'
 
 /**
  * Query keys for document-related queries

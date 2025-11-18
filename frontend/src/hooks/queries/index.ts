@@ -11,7 +11,6 @@ export {
   useUpdateProfile,
   useChangePassword,
   useEnableMFA,
-  useVerifyMFA,
   useDisableMFA,
   useDeleteAccount,
   useLogin,

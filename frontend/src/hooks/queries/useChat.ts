@@ -5,7 +5,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { message } from 'antd'
 import { chatAPI } from '@services/api.refactored'
-import type { ChatAPI } from '@types'
+import type { ChatAPI } from '@/types'
 
 /**
  * Query keys for chat-related queries

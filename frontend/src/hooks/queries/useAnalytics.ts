@@ -5,7 +5,7 @@
 import { useQuery, useMutation } from '@tanstack/react-query'
 import { message } from 'antd'
 import { analyticsAPI } from '@services/api.refactored'
-import type { AnalyticsAPI } from '@types'
+import type { AnalyticsAPI } from '@/types'
 
 /**
  * Query keys for analytics-related queries

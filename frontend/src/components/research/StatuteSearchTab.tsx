@@ -20,16 +20,15 @@ export function StatuteSearchTab({ onViewDetail }: StatuteSearchTabProps) {
   const [statuteType, setStatuteType] = useState<string>()
 
   const { mutate: searchStatutes, data, isPending } = useSearchStatutesMutation()
-  const statutes = data?.data?.statutes || []
+  const statutes = (data?.data as any) || []
 
   const handleSearch = (value: string) => {
     if (!value.trim()) return
 
     searchStatutes({
       query: value,
-      statute_type: statuteType,
       limit: 20,
-    })
+    } as any)
   }
 
   return (

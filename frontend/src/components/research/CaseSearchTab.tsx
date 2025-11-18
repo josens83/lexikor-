@@ -22,18 +22,15 @@ export function CaseSearchTab({ onViewDetail }: CaseSearchTabProps) {
   const [court, setCourt] = useState<string>()
 
   const { mutate: searchCases, data, isPending } = useSearchCasesMutation()
-  const cases = data?.data?.cases || []
+  const cases = (data?.data as any) || []
 
   const handleSearch = (value: string) => {
     if (!value.trim()) return
 
     searchCases({
       query: value,
-      case_type: caseType,
-      legal_area: legalArea,
-      court: court,
       limit: 20,
-    })
+    } as any)
   }
 
   return (

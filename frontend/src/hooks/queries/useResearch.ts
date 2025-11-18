@@ -4,7 +4,7 @@
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { researchAPI } from '@services/api.refactored'
-import type { ResearchAPI } from '@types'
+import type { ResearchAPI } from '@/types'
 
 /**
  * Query keys for research-related queries
@@ -29,7 +29,7 @@ export function useSearchCases(params: ResearchAPI.SearchCasesRequest) {
     queryKey: researchKeys.caseSearch(params),
     queryFn: async () => {
       const response = await researchAPI.searchCases(params)
-      return response.data.cases
+      return response.data
     },
     enabled: !!params.query, // Only run if query is provided
     staleTime: 10 * 60 * 1000, // 10 minutes - search results don't change often
@@ -69,7 +69,7 @@ export function useSearchStatutes(params: ResearchAPI.SearchStatutesRequest) {
     queryKey: researchKeys.statuteSearch(params),
     queryFn: async () => {
       const response = await researchAPI.searchStatutes(params)
-      return response.data.statutes
+      return response.data
     },
     enabled: !!params.query,
     staleTime: 10 * 60 * 1000, // 10 minutes

@@ -6,7 +6,7 @@ import { Card, Row, Col, Form, Input, Button, Divider } from 'antd'
 import { SafetyOutlined } from '@ant-design/icons'
 import { useCurrentUser, useUpdateProfile } from '@hooks/queries'
 import { EmailField } from '@components/form'
-import type { User } from '@types'
+import type { User } from '@/types'
 
 export function ProfileTab() {
   const { data: profile, isLoading } = useCurrentUser()
@@ -47,16 +47,17 @@ export function ProfileTab() {
             </Form.Item>
           </Col>
           <Col xs={24} md={12}>
-            <EmailField
-              name="email"
-              label="이메일"
-              disabled
-              suffix={
-                profile?.is_verified && (
-                  <SafetyOutlined style={{ color: '#52c41a' }} />
-                )
-              }
-            />
+            <Form.Item name="email" label="이메일">
+              <Input
+                size="large"
+                disabled
+                suffix={
+                  profile?.is_verified && (
+                    <SafetyOutlined style={{ color: '#52c41a' }} />
+                  )
+                }
+              />
+            </Form.Item>
           </Col>
           <Col xs={24} md={12}>
             <Form.Item name="phone" label="전화번호">
