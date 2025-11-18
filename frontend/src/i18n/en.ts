@@ -123,7 +123,7 @@ export const en = {
     caseNumber: 'Case Number',
     caseName: 'Case Name',
     court: 'Court',
-    decision Date: 'Decision Date',
+    decisionDate: 'Decision Date',
     statuteName: 'Statute Name',
     statuteNumber: 'Statute Number',
     effectiveDate: 'Effective Date',
