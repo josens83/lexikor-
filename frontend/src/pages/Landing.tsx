@@ -1,373 +1,480 @@
-import { Layout, Button, Row, Col, Card, Typography, Statistic, Space, Divider } from 'antd'
-import { RocketOutlined, SafetyOutlined, ThunderboltOutlined, TeamOutlined, CheckCircleOutlined, StarFilled } from '@ant-design/icons'
-import { useNavigate } from 'react-router-dom'
+/**
+ * Landing Page - Modern Design
+ * Linear/Stripe/Notion inspired design
+ */
 
-const { Header, Content, Footer } = Layout
+import { Button, Row, Col, Typography, Space, Card } from 'antd'
+import {
+  RocketOutlined,
+  SafetyOutlined,
+  ThunderboltOutlined,
+  TeamOutlined,
+  CheckCircleOutlined,
+  StarFilled,
+  ArrowRightOutlined,
+  ApiOutlined,
+  FileTextOutlined,
+  MessageOutlined
+} from '@ant-design/icons'
+import { useNavigate } from 'react-router-dom'
+import '../styles/design-tokens.css'
+
 const { Title, Paragraph, Text } = Typography
 
 const Landing = () => {
   const navigate = useNavigate()
 
+  const features = [
+    {
+      icon: <RocketOutlined />,
+      title: '빠른 법률 검색',
+      description: 'AI가 수천 건의 판례와 법령을 즉시 검색하여 정확한 법률 정보를 제공합니다',
+      color: '#6366f1'
+    },
+    {
+      icon: <SafetyOutlined />,
+      title: '계약서 자동 분석',
+      description: '위험 조항을 자동으로 식별하고 전문적인 수정 제안을 제공합니다',
+      color: '#8b5cf6'
+    },
+    {
+      icon: <ThunderboltOutlined />,
+      title: '문서 자동 생성',
+      description: '소장, 내용증명, 계약서 등을 템플릿으로 빠르게 작성할 수 있습니다',
+      color: '#ec4899'
+    },
+    {
+      icon: <TeamOutlined />,
+      title: '팀 협업',
+      description: '법률사무소 전체가 문서와 정보를 안전하게 공유하며 협업합니다',
+      color: '#10b981'
+    }
+  ]
+
+  const stats = [
+    { value: '10,000+', label: '활성 사용자' },
+    { value: '99.9%', label: '가동률' },
+    { value: '50,000+', label: '분석된 문서' },
+    { value: '24/7', label: '고객 지원' }
+  ]
+
+  const testimonials = [
+    {
+      name: '김철수',
+      role: '변호사, 법무법인 정의',
+      content: 'LexiKor 덕분에 법률 리서치 시간이 70% 단축되었습니다. 이제 고객에게 더 집중할 수 있게 되었어요.',
+      rating: 5
+    },
+    {
+      name: '이영희',
+      role: 'CEO, 스타트업 법률서비스',
+      content: '계약서 검토가 이렇게 빠를 수가! AI 분석이 정말 정확하고 놀라워요.',
+      rating: 5
+    },
+    {
+      name: '박민수',
+      role: '법무팀장, 대기업',
+      content: '팀 전체가 사용하기 쉽고, 문서 관리도 체계적입니다. 강력 추천합니다!',
+      rating: 5
+    }
+  ]
+
   return (
-    <Layout>
-      <Header style={{ background: '#fff', padding: '0 50px', boxShadow: '0 2px 8px rgba(0,0,0,0.1)', position: 'sticky', top: 0, zIndex: 1000 }}>
-        <Row justify="space-between" align="middle" style={{ height: '64px' }}>
-          <Col>
-            <Title level={3} style={{ margin: 0, color: '#1890ff', cursor: 'pointer' }} onClick={() => navigate('/')}>
-              ⚖️ LexiKor
-            </Title>
-          </Col>
-          <Col>
-            <Space size="middle">
-              <Button type="text" onClick={() => navigate('/faq')}>
-                FAQ
-              </Button>
-              <Button type="text" onClick={() => navigate('/login')}>
-                로그인
-              </Button>
-              <Button type="primary" onClick={() => navigate('/register')}>
-                무료 시작하기
-              </Button>
-            </Space>
-          </Col>
-        </Row>
-      </Header>
+    <div className="bg-primary" style={{ minHeight: '100vh', position: 'relative', overflow: 'hidden' }}>
+      {/* Background Effects */}
+      <div className="dot-pattern" style={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        opacity: 0.3,
+        pointerEvents: 'none'
+      }} />
 
-      <Content>
-        {/* Hero Section */}
-        <div style={{
-          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-          padding: '100px 50px',
-          textAlign: 'center',
-          color: '#fff'
-        }}>
-          <Title style={{ color: '#fff', fontSize: '48px', marginBottom: '24px' }}>
-            AI 기반 법률 어시스턴트
-          </Title>
-          <Paragraph style={{ color: '#fff', fontSize: '20px', marginBottom: '40px' }}>
-            판례 검색, 계약서 분석, 법률 문서 작성을 AI로 자동화하세요
-          </Paragraph>
-          <Button type="primary" size="large" onClick={() => navigate('/register')} style={{
-            height: '50px',
-            fontSize: '18px',
-            padding: '0 40px'
+      {/* Gradient Orbs */}
+      <div style={{
+        position: 'absolute',
+        top: '-10%',
+        right: '-5%',
+        width: '600px',
+        height: '600px',
+        background: 'radial-gradient(circle, rgba(99, 102, 241, 0.3), transparent 70%)',
+        filter: 'blur(60px)',
+        pointerEvents: 'none'
+      }} />
+      <div style={{
+        position: 'absolute',
+        bottom: '-10%',
+        left: '-5%',
+        width: '500px',
+        height: '500px',
+        background: 'radial-gradient(circle, rgba(168, 85, 247, 0.3), transparent 70%)',
+        filter: 'blur(60px)',
+        pointerEvents: 'none'
+      }} />
+
+      {/* Header */}
+      <header className="glass-strong" style={{
+        position: 'sticky',
+        top: 0,
+        zIndex: 1000,
+        borderBottom: '1px solid rgba(var(--color-border), 0.1)'
+      }}>
+        <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '0 24px' }}>
+          <Row justify="space-between" align="middle" style={{ height: '72px' }}>
+            <Col>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }} onClick={() => navigate('/')}>
+                <span style={{ fontSize: '28px' }}>⚖️</span>
+                <Title level={3} className="gradient-text" style={{ margin: 0, fontWeight: 800, fontSize: '24px' }}>
+                  LexiKor
+                </Title>
+              </div>
+            </Col>
+            <Col>
+              <Space size="large">
+                <Button type="text" className="text-primary" onClick={() => navigate('/faq')} style={{ fontWeight: 500 }}>
+                  FAQ
+                </Button>
+                <Button type="text" className="text-primary" onClick={() => navigate('/help')} style={{ fontWeight: 500 }}>
+                  도움말
+                </Button>
+                <Button type="text" className="text-primary" onClick={() => navigate('/login')} style={{ fontWeight: 500 }}>
+                  로그인
+                </Button>
+                <Button
+                  type="primary"
+                  className="btn-modern btn-primary hover-lift"
+                  onClick={() => navigate('/register')}
+                  icon={<ArrowRightOutlined />}
+                >
+                  무료 시작하기
+                </Button>
+              </Space>
+            </Col>
+          </Row>
+        </div>
+      </header>
+
+      {/* Hero Section */}
+      <section style={{ padding: '120px 24px 100px', position: 'relative' }}>
+        <div style={{ maxWidth: '1280px', margin: '0 auto', textAlign: 'center' }}>
+          <div style={{ marginBottom: '24px' }}>
+            <span className="glass" style={{
+              display: 'inline-block',
+              padding: '8px 16px',
+              borderRadius: 'var(--radius-full)',
+              fontSize: '14px',
+              fontWeight: 600,
+              color: 'rgb(var(--color-primary))'
+            }}>
+              ✨ AI로 법률 업무를 혁신하세요
+            </span>
+          </div>
+
+          <Title className="text-primary" style={{
+            fontSize: '72px',
+            fontWeight: 800,
+            lineHeight: 1.1,
+            marginBottom: '24px',
+            letterSpacing: '-0.02em'
           }}>
-            14일 무료 체험 시작
-          </Button>
-        </div>
-
-        {/* Features Section */}
-        <div style={{ padding: '80px 50px', background: '#f0f2f5' }}>
-          <Title level={2} style={{ textAlign: 'center', marginBottom: '60px' }}>
-            왜 LexiKor를 선택해야 할까요?
+            AI 기반<br />
+            <span className="gradient-text">법률 어시스턴트</span>
           </Title>
-          <Row gutter={[32, 32]} justify="center">
-            <Col xs={24} sm={12} lg={6}>
-              <Card bordered={false} style={{ textAlign: 'center', height: '100%' }}>
-                <RocketOutlined style={{ fontSize: '48px', color: '#1890ff', marginBottom: '20px' }} />
-                <Title level={4}>빠른 법률 검색</Title>
-                <Paragraph>
-                  수천 건의 판례와 법령을 AI가 즉시 검색하여 관련 정보를 제공합니다
-                </Paragraph>
-              </Card>
-            </Col>
-            <Col xs={24} sm={12} lg={6}>
-              <Card bordered={false} style={{ textAlign: 'center', height: '100%' }}>
-                <SafetyOutlined style={{ fontSize: '48px', color: '#1890ff', marginBottom: '20px' }} />
-                <Title level={4}>계약서 자동 분석</Title>
-                <Paragraph>
-                  계약서의 위험 조항을 자동으로 식별하고 수정 제안을 제공합니다
-                </Paragraph>
-              </Card>
-            </Col>
-            <Col xs={24} sm={12} lg={6}>
-              <Card bordered={false} style={{ textAlign: 'center', height: '100%' }}>
-                <ThunderboltOutlined style={{ fontSize: '48px', color: '#1890ff', marginBottom: '20px' }} />
-                <Title level={4}>문서 자동 생성</Title>
-                <Paragraph>
-                  소장, 내용증명, 계약서 등 법률 문서를 템플릿으로 빠르게 작성합니다
-                </Paragraph>
-              </Card>
-            </Col>
-            <Col xs={24} sm={12} lg={6}>
-              <Card bordered={false} style={{ textAlign: 'center', height: '100%' }}>
-                <TeamOutlined style={{ fontSize: '48px', color: '#1890ff', marginBottom: '20px' }} />
-                <Title level={4}>팀 협업</Title>
-                <Paragraph>
-                  법률사무소 전체가 함께 사용하며 문서와 정보를 공유할 수 있습니다
-                </Paragraph>
-              </Card>
-            </Col>
-          </Row>
-        </div>
 
-        {/* Stats Section */}
-        <div style={{ padding: '60px 50px', background: '#fff' }}>
-          <Row gutter={[32, 32]} justify="center">
-            <Col xs={24} sm={8}>
-              <Statistic
-                title="활성 사용자"
-                value={1200}
-                suffix="+"
-                valueStyle={{ color: '#1890ff', textAlign: 'center' }}
-                style={{ textAlign: 'center' }}
-              />
-            </Col>
-            <Col xs={24} sm={8}>
-              <Statistic
-                title="처리된 문서"
-                value={15000}
-                suffix="+"
-                valueStyle={{ color: '#52c41a', textAlign: 'center' }}
-                style={{ textAlign: 'center' }}
-              />
-            </Col>
-            <Col xs={24} sm={8}>
-              <Statistic
-                title="고객 만족도"
-                value={98}
-                suffix="%"
-                valueStyle={{ color: '#faad14', textAlign: 'center' }}
-                style={{ textAlign: 'center' }}
-              />
-            </Col>
-          </Row>
-        </div>
-
-        {/* Testimonials Section */}
-        <div style={{ padding: '80px 50px', background: '#f0f2f5' }}>
-          <Title level={2} style={{ textAlign: 'center', marginBottom: '60px' }}>
-            고객 후기
-          </Title>
-          <Row gutter={[32, 32]} justify="center">
-            <Col xs={24} md={8}>
-              <Card>
-                <div style={{ marginBottom: 16 }}>
-                  {[...Array(5)].map((_, i) => (
-                    <StarFilled key={i} style={{ color: '#faad14', fontSize: 16 }} />
-                  ))}
-                </div>
-                <Paragraph>
-                  "계약서 검토 시간이 70% 단축되었습니다. 놓칠 뻔한 중요 조항도 AI가 찾아줘서 큰 도움이 됩니다."
-                </Paragraph>
-                <Text strong>- 김변호사, 법무법인</Text>
-              </Card>
-            </Col>
-            <Col xs={24} md={8}>
-              <Card>
-                <div style={{ marginBottom: 16 }}>
-                  {[...Array(5)].map((_, i) => (
-                    <StarFilled key={i} style={{ color: '#faad14', fontSize: 16 }} />
-                  ))}
-                </div>
-                <Paragraph>
-                  "판례 검색이 정말 빠르고 정확합니다. 예전에는 하루 걸리던 리서치가 1시간이면 끝나요."
-                </Paragraph>
-                <Text strong>- 이대표, 스타트업</Text>
-              </Card>
-            </Col>
-            <Col xs={24} md={8}>
-              <Card>
-                <div style={{ marginBottom: 16 }}>
-                  {[...Array(5)].map((_, i) => (
-                    <StarFilled key={i} style={{ color: '#faad14', fontSize: 16 }} />
-                  ))}
-                </div>
-                <Paragraph>
-                  "문서 자동 생성 기능으로 반복 업무를 대폭 줄였습니다. 이제는 필수 툴이 되었어요."
-                </Paragraph>
-                <Text strong>- 박팀장, 기업 법무팀</Text>
-              </Card>
-            </Col>
-          </Row>
-        </div>
-
-        {/* Pricing Section */}
-        <div style={{ padding: '80px 50px' }}>
-          <Title level={2} style={{ textAlign: 'center', marginBottom: '16px' }}>
-            합리적인 가격 정책
-          </Title>
-          <Paragraph style={{ textAlign: 'center', fontSize: 16, marginBottom: 60, color: '#8c8c8c' }}>
-            모든 플랜은 14일 무료 체험이 포함되어 있습니다
+          <Paragraph className="text-secondary" style={{
+            fontSize: '20px',
+            maxWidth: '700px',
+            margin: '0 auto 48px',
+            lineHeight: 1.6
+          }}>
+            판례 검색, 계약서 분석, 법률 문서 작성을 AI로 자동화하세요.
+            <br />
+            법률 전문가들이 신뢰하는 No.1 플랫폼
           </Paragraph>
-          <Row gutter={[32, 32]} justify="center">
-            <Col xs={24} md={8}>
-              <Card className="pricing-card">
-                <Title level={4}>Free</Title>
-                <div className="price">무료</div>
-                <Paragraph>개인 사용자를 위한 무료 플랜</Paragraph>
-                <ul style={{ textAlign: 'left', paddingLeft: '20px' }}>
-                  <li>월 20회 AI 쿼리</li>
-                  <li>문서 5개 저장</li>
-                  <li>기본 채팅 기능</li>
-                  <li>문서 요약</li>
-                </ul>
-                <Button size="large" block onClick={() => navigate('/register')}>
-                  시작하기
-                </Button>
-              </Card>
-            </Col>
-            <Col xs={24} md={8}>
-              <Card className="pricing-card featured">
-                <Title level={4}>Professional</Title>
-                <div className="price">₩99,000<span style={{ fontSize: '16px' }}>/월</span></div>
-                <Paragraph>전문가를 위한 프로 플랜</Paragraph>
-                <ul style={{ textAlign: 'left', paddingLeft: '20px' }}>
-                  <li>무제한 AI 쿼리</li>
-                  <li>문서 100개 저장</li>
-                  <li>전체 기능 사용</li>
-                  <li>우선 지원</li>
-                </ul>
-                <Button type="primary" size="large" block onClick={() => navigate('/register')}>
-                  지금 시작
-                </Button>
-              </Card>
-            </Col>
-            <Col xs={24} md={8}>
-              <Card className="pricing-card">
-                <Title level={4}>Enterprise</Title>
-                <div className="price">맞춤 견적</div>
-                <Paragraph>법률사무소를 위한 엔터프라이즈</Paragraph>
-                <ul style={{ textAlign: 'left', paddingLeft: '20px' }}>
-                  <li>무제한 쿼리 & 문서</li>
-                  <li>전용 서버</li>
-                  <li>API 액세스</li>
-                  <li>커스터마이징</li>
-                </ul>
-                <Button size="large" block>
-                  문의하기
-                </Button>
-              </Card>
-            </Col>
-          </Row>
-        </div>
 
-        {/* FAQ Teaser */}
-        <div style={{ padding: '60px 50px', background: '#f0f2f5', textAlign: 'center' }}>
-          <Title level={3} style={{ marginBottom: 24 }}>
-            자주 묻는 질문
-          </Title>
-          <Space direction="vertical" size="middle" style={{ width: '100%', maxWidth: 800, margin: '0 auto' }}>
-            <Card>
-              <Row justify="space-between" align="middle">
-                <Col><Text strong>LexiKor는 무료로 사용할 수 있나요?</Text></Col>
-                <Col><CheckCircleOutlined style={{ color: '#52c41a', fontSize: 20 }} /></Col>
-              </Row>
-            </Card>
-            <Card>
-              <Row justify="space-between" align="middle">
-                <Col><Text strong>법률 정보는 얼마나 정확한가요?</Text></Col>
-                <Col><CheckCircleOutlined style={{ color: '#52c41a', fontSize: 20 }} /></Col>
-              </Row>
-            </Card>
-            <Card>
-              <Row justify="space-between" align="middle">
-                <Col><Text strong>환불 정책은 어떻게 되나요?</Text></Col>
-                <Col><CheckCircleOutlined style={{ color: '#52c41a', fontSize: 20 }} /></Col>
-              </Row>
-            </Card>
-          </Space>
-          <Button
-            type="link"
-            size="large"
-            onClick={() => navigate('/faq')}
-            style={{ marginTop: 24 }}
-          >
-            모든 FAQ 보기 →
-          </Button>
-        </div>
-
-        {/* CTA Section */}
-        <div style={{
-          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-          padding: '80px 50px',
-          textAlign: 'center'
-        }}>
-          <Title level={2} style={{ color: '#fff', marginBottom: '24px' }}>
-            지금 바로 시작하세요
-          </Title>
-          <Paragraph style={{ color: '#fff', fontSize: '18px', marginBottom: '32px' }}>
-            14일 무료 체험, 신용카드 불필요
-          </Paragraph>
-          <Space size="middle">
+          <Space size="large" wrap>
             <Button
               size="large"
+              type="primary"
+              className="btn-modern btn-primary hover-lift glow-primary"
               onClick={() => navigate('/register')}
+              icon={<RocketOutlined />}
               style={{
-                height: '50px',
+                height: '56px',
+                padding: '0 32px',
+                fontSize: '16px',
+                fontWeight: 600
+              }}
+            >
+              14일 무료 체험 시작
+            </Button>
+            <Button
+              size="large"
+              className="btn-modern glass"
+              onClick={() => navigate('/help')}
+              style={{
+                height: '56px',
+                padding: '0 32px',
+                fontSize: '16px',
+                fontWeight: 600,
+                color: 'rgb(var(--color-text-primary))'
+              }}
+            >
+              자세히 알아보기
+            </Button>
+          </Space>
+
+          {/* Stats */}
+          <Row gutter={48} justify="center" style={{ marginTop: '80px' }}>
+            {stats.map((stat, index) => (
+              <Col key={index} xs={12} sm={6}>
+                <div className="text-center">
+                  <div className="gradient-text" style={{
+                    fontSize: '48px',
+                    fontWeight: 800,
+                    marginBottom: '8px'
+                  }}>
+                    {stat.value}
+                  </div>
+                  <Text className="text-secondary" style={{ fontSize: '16px' }}>
+                    {stat.label}
+                  </Text>
+                </div>
+              </Col>
+            ))}
+          </Row>
+        </div>
+      </section>
+
+      {/* Features Section - Bento Grid */}
+      <section className="bg-secondary" style={{ padding: '100px 24px', position: 'relative' }}>
+        <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
+          <div style={{ textAlign: 'center', marginBottom: '64px' }}>
+            <Title className="text-primary" style={{
+              fontSize: '48px',
+              fontWeight: 800,
+              marginBottom: '16px'
+            }}>
+              왜 LexiKor를 선택해야 할까요?
+            </Title>
+            <Paragraph className="text-secondary" style={{ fontSize: '18px', maxWidth: '600px', margin: '0 auto' }}>
+              최첨단 AI 기술로 법률 업무의 효율성을 극대화하세요
+            </Paragraph>
+          </div>
+
+          <Row gutter={[24, 24]}>
+            {features.map((feature, index) => (
+              <Col key={index} xs={24} sm={12} lg={6}>
+                <div className="card-modern hover-lift glow-border" style={{
+                  height: '100%',
+                  background: 'rgb(var(--color-surface))',
+                  cursor: 'pointer'
+                }}>
+                  <div style={{
+                    width: '56px',
+                    height: '56px',
+                    borderRadius: 'var(--radius-lg)',
+                    background: `linear-gradient(135deg, ${feature.color}33, ${feature.color}11)`,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    marginBottom: '20px',
+                    fontSize: '28px',
+                    color: feature.color
+                  }}>
+                    {feature.icon}
+                  </div>
+                  <Title level={4} className="text-primary" style={{ marginBottom: '12px', fontWeight: 700 }}>
+                    {feature.title}
+                  </Title>
+                  <Paragraph className="text-secondary" style={{ marginBottom: 0, fontSize: '15px' }}>
+                    {feature.description}
+                  </Paragraph>
+                </div>
+              </Col>
+            ))}
+          </Row>
+        </div>
+      </section>
+
+      {/* Testimonials */}
+      <section style={{ padding: '100px 24px', position: 'relative' }}>
+        <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
+          <div style={{ textAlign: 'center', marginBottom: '64px' }}>
+            <Title className="text-primary" style={{
+              fontSize: '48px',
+              fontWeight: 800,
+              marginBottom: '16px'
+            }}>
+              고객들의 이야기
+            </Title>
+            <Paragraph className="text-secondary" style={{ fontSize: '18px' }}>
+              전국의 법률 전문가들이 LexiKor를 사용합니다
+            </Paragraph>
+          </div>
+
+          <Row gutter={[24, 24]}>
+            {testimonials.map((testimonial, index) => (
+              <Col key={index} xs={24} md={8}>
+                <div className="glass hover-scale" style={{
+                  padding: 'var(--space-8)',
+                  borderRadius: 'var(--radius-xl)',
+                  height: '100%',
+                  transition: 'all var(--transition-base)'
+                }}>
+                  <div style={{ marginBottom: '16px' }}>
+                    {[...Array(testimonial.rating)].map((_, i) => (
+                      <StarFilled key={i} style={{ color: '#faad14', fontSize: '20px', marginRight: '4px' }} />
+                    ))}
+                  </div>
+                  <Paragraph className="text-primary" style={{
+                    fontSize: '16px',
+                    lineHeight: 1.7,
+                    marginBottom: '24px',
+                    fontStyle: 'italic'
+                  }}>
+                    "{testimonial.content}"
+                  </Paragraph>
+                  <div>
+                    <Text strong className="text-primary" style={{ display: 'block', marginBottom: '4px' }}>
+                      {testimonial.name}
+                    </Text>
+                    <Text className="text-secondary" style={{ fontSize: '14px' }}>
+                      {testimonial.role}
+                    </Text>
+                  </div>
+                </div>
+              </Col>
+            ))}
+          </Row>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="gradient-primary" style={{ padding: '100px 24px', position: 'relative' }}>
+        <div style={{ maxWidth: '800px', margin: '0 auto', textAlign: 'center' }}>
+          <Title style={{
+            color: '#fff',
+            fontSize: '48px',
+            fontWeight: 800,
+            marginBottom: '24px'
+          }}>
+            지금 바로 시작하세요
+          </Title>
+          <Paragraph style={{
+            color: 'rgba(255, 255, 255, 0.9)',
+            fontSize: '20px',
+            marginBottom: '48px'
+          }}>
+            14일 무료 체험으로 LexiKor의 강력한 기능을 경험해보세요
+            <br />
+            신용카드 등록 불필요
+          </Paragraph>
+
+          <Space direction="vertical" size="middle" style={{ width: '100%', maxWidth: '400px', margin: '0 auto' }}>
+            <Button
+              size="large"
+              className="hover-lift"
+              onClick={() => navigate('/register')}
+              icon={<ArrowRightOutlined />}
+              style={{
+                width: '100%',
+                height: '56px',
                 fontSize: '18px',
-                padding: '0 40px',
+                fontWeight: 600,
                 background: '#fff',
-                color: '#667eea',
-                border: 'none',
-                fontWeight: 'bold'
+                color: 'rgb(var(--color-primary))',
+                border: 'none'
               }}
             >
               무료로 시작하기
             </Button>
-            <Button
-              size="large"
-              onClick={() => navigate('/faq')}
-              style={{
-                height: '50px',
-                fontSize: '18px',
-                padding: '0 40px',
-                background: 'transparent',
-                color: '#fff',
-                border: '2px solid #fff'
-              }}
-            >
-              더 알아보기
-            </Button>
+            <div style={{ display: 'flex', justifyContent: 'center', gap: '32px', marginTop: '24px' }}>
+              <Space direction="vertical" size={4} align="center">
+                <CheckCircleOutlined style={{ fontSize: '20px', color: '#fff' }} />
+                <Text style={{ color: 'rgba(255, 255, 255, 0.9)', fontSize: '14px' }}>신용카드 불필요</Text>
+              </Space>
+              <Space direction="vertical" size={4} align="center">
+                <CheckCircleOutlined style={{ fontSize: '20px', color: '#fff' }} />
+                <Text style={{ color: 'rgba(255, 255, 255, 0.9)', fontSize: '14px' }}>즉시 사용 가능</Text>
+              </Space>
+              <Space direction="vertical" size={4} align="center">
+                <CheckCircleOutlined style={{ fontSize: '20px', color: '#fff' }} />
+                <Text style={{ color: 'rgba(255, 255, 255, 0.9)', fontSize: '14px' }}>언제든 취소 가능</Text>
+              </Space>
+            </div>
           </Space>
         </div>
-      </Content>
+      </section>
 
-      <Footer style={{ background: '#001529', color: '#fff', padding: '40px 50px' }}>
-        <Row gutter={[32, 32]}>
-          <Col xs={24} sm={12} md={6}>
-            <Title level={5} style={{ color: '#fff' }}>제품</Title>
-            <Space direction="vertical">
-              <Button type="link" style={{ color: '#fff', padding: 0 }} onClick={() => navigate('/register')}>
-                가격
-              </Button>
-              <Button type="link" style={{ color: '#fff', padding: 0 }} onClick={() => navigate('/faq')}>
-                FAQ
-              </Button>
-            </Space>
-          </Col>
-          <Col xs={24} sm={12} md={6}>
-            <Title level={5} style={{ color: '#fff' }}>법적 고지</Title>
-            <Space direction="vertical">
-              <Button type="link" style={{ color: '#fff', padding: 0 }} onClick={() => navigate('/terms')}>
-                이용약관
-              </Button>
-              <Button type="link" style={{ color: '#fff', padding: 0 }} onClick={() => navigate('/privacy')}>
-                개인정보처리방침
-              </Button>
-            </Space>
-          </Col>
-          <Col xs={24} sm={12} md={6}>
-            <Title level={5} style={{ color: '#fff' }}>고객 지원</Title>
-            <Space direction="vertical">
-              <Text style={{ color: '#fff' }}>support@lexikor.ai</Text>
-              <Text style={{ color: '#fff' }}>02-1234-5678</Text>
-            </Space>
-          </Col>
-          <Col xs={24} sm={12} md={6}>
-            <Title level={5} style={{ color: '#fff' }}>회사</Title>
-            <Space direction="vertical">
-              <Text style={{ color: '#fff' }}>서울시 강남구</Text>
-              <Text style={{ color: '#fff' }}>사업자번호: 123-45-67890</Text>
-            </Space>
-          </Col>
-        </Row>
-        <Divider style={{ background: '#595959', margin: '32px 0' }} />
-        <Paragraph style={{ color: '#8c8c8c', margin: 0, textAlign: 'center' }}>
-          © 2024 LexiKor. All rights reserved. Made with ❤️ for Korean Legal Professionals
-        </Paragraph>
-      </Footer>
-    </Layout>
+      {/* Footer */}
+      <footer className="bg-secondary" style={{
+        padding: '48px 24px',
+        borderTop: '1px solid rgb(var(--color-border))'
+      }}>
+        <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
+          <Row gutter={[32, 32]}>
+            <Col xs={24} md={8}>
+              <Space direction="vertical" size="middle">
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <span style={{ fontSize: '24px' }}>⚖️</span>
+                  <Text className="text-primary" strong style={{ fontSize: '20px' }}>LexiKor</Text>
+                </div>
+                <Paragraph className="text-secondary" style={{ marginBottom: 0 }}>
+                  AI 기반 법률 어시스턴트 플랫폼
+                  <br />
+                  법률 업무의 미래를 만들어갑니다
+                </Paragraph>
+              </Space>
+            </Col>
+            <Col xs={24} md={16}>
+              <Row gutter={32}>
+                <Col xs={12} sm={6}>
+                  <Space direction="vertical" size="small">
+                    <Text className="text-primary" strong>제품</Text>
+                    <a href="/faq" className="text-secondary">FAQ</a>
+                    <a href="/help" className="text-secondary">도움말</a>
+                    <a href="/api-docs" className="text-secondary">API</a>
+                  </Space>
+                </Col>
+                <Col xs={12} sm={6}>
+                  <Space direction="vertical" size="small">
+                    <Text className="text-primary" strong>회사</Text>
+                    <a href="/privacy" className="text-secondary">개인정보처리방침</a>
+                    <a href="/terms" className="text-secondary">이용약관</a>
+                  </Space>
+                </Col>
+                <Col xs={12} sm={6}>
+                  <Space direction="vertical" size="small">
+                    <Text className="text-primary" strong>지원</Text>
+                    <a href="mailto:support@lexikor.ai" className="text-secondary">이메일</a>
+                    <a href="tel:02-1234-5678" className="text-secondary">전화</a>
+                  </Space>
+                </Col>
+                <Col xs={12} sm={6}>
+                  <Space direction="vertical" size="small">
+                    <Text className="text-primary" strong>상태</Text>
+                    <a href="/service-status" className="text-secondary">서비스 상태</a>
+                  </Space>
+                </Col>
+              </Row>
+            </Col>
+          </Row>
+
+          <div className="border-default" style={{
+            marginTop: '32px',
+            paddingTop: '32px',
+            borderTop: '1px solid'
+          }}>
+            <Text className="text-tertiary" style={{ fontSize: '14px' }}>
+              © 2025 LexiKor. All rights reserved.
+            </Text>
+          </div>
+        </div>
+      </footer>
+    </div>
   )
 }
 
