@@ -9,6 +9,15 @@ export * from './layout'
 // Form Components
 export * from './form'
 
+// Settings Components
+export * from './settings'
+
+// Billing Components
+export * from './billing'
+
+// Research Components
+export * from './research'
+
 // Existing Components
 export { default as DataExportModal } from './DataExportModal'
 export { default as ErrorBoundary } from './ErrorBoundary'
