@@ -28,6 +28,11 @@ const BillingHistoryPage = lazy(() => import('./pages/BillingHistory'))
 const UsageAnalyticsPage = lazy(() => import('./pages/UsageAnalytics'))
 const SettingsPage = lazy(() => import('./pages/Settings'))
 const NotFoundPage = lazy(() => import('./pages/NotFound'))
+const ServiceStatusPage = lazy(() => import('./pages/ServiceStatus'))
+const APIDocsPage = lazy(() => import('./pages/APIDocs'))
+const HelpCenterPage = lazy(() => import('./pages/HelpCenter'))
+const AdminDashboardPage = lazy(() => import('./pages/admin/AdminDashboard'))
+const UserManagementPage = lazy(() => import('./pages/admin/UserManagement'))
 
 // Loading fallback component
 const LoadingFallback = () => (
@@ -51,7 +56,7 @@ function App() {
   }, [location])
 
   // Pages that don't need the main layout
-  const publicPages = ['/', '/login', '/register', '/verify-email', '/forgot-password', '/reset-password', '/terms', '/privacy', '/faq']
+  const publicPages = ['/', '/login', '/register', '/verify-email', '/forgot-password', '/reset-password', '/terms', '/privacy', '/faq', '/service-status', '/api-docs', '/help']
   const shouldUseLayout = !publicPages.includes(location.pathname)
 
   return (
@@ -67,6 +72,9 @@ function App() {
         <Route path="/terms" element={<TermsPage />} />
         <Route path="/privacy" element={<PrivacyPage />} />
         <Route path="/faq" element={<FAQPage />} />
+        <Route path="/service-status" element={<ServiceStatusPage />} />
+        <Route path="/api-docs" element={<APIDocsPage />} />
+        <Route path="/help" element={<HelpCenterPage />} />
 
         {/* Protected routes with MainLayout */}
         <Route path="/dashboard" element={
@@ -117,6 +125,18 @@ function App() {
         <Route path="/settings" element={
           <PrivateRoute>
             <MainLayout><SettingsPage /></MainLayout>
+          </PrivateRoute>
+        } />
+
+        {/* Admin routes */}
+        <Route path="/admin" element={
+          <PrivateRoute>
+            <MainLayout><AdminDashboardPage /></MainLayout>
+          </PrivateRoute>
+        } />
+        <Route path="/admin/users" element={
+          <PrivateRoute>
+            <MainLayout><UserManagementPage /></MainLayout>
           </PrivateRoute>
         } />
 

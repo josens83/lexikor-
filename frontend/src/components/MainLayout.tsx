@@ -10,7 +10,9 @@ import {
   CreditCardOutlined,
   SettingOutlined,
   UserOutlined,
-  LogoutOutlined
+  LogoutOutlined,
+  QuestionCircleOutlined,
+  TeamOutlined
 } from '@ant-design/icons'
 import { useNavigate, useLocation } from 'react-router-dom'
 import type { MenuProps } from 'antd'
@@ -94,6 +96,21 @@ const MainLayout = ({ children }: MainLayoutProps) => {
       icon: <SettingOutlined />,
       label: <span data-tour="settings">설정</span>,
       onClick: () => navigate('/settings')
+    },
+    {
+      type: 'divider'
+    },
+    {
+      key: '/help',
+      icon: <QuestionCircleOutlined />,
+      label: '도움말',
+      onClick: () => navigate('/help')
+    },
+    {
+      key: '/admin',
+      icon: <TeamOutlined />,
+      label: '관리자',
+      onClick: () => navigate('/admin')
     }
   ]
 
@@ -222,6 +239,9 @@ const MainLayout = ({ children }: MainLayoutProps) => {
               {location.pathname === '/analytics' && '사용량 분석'}
               {location.pathname === '/billing' && '구독 & 결제'}
               {location.pathname === '/settings' && '설정'}
+              {location.pathname === '/help' && '도움말'}
+              {location.pathname === '/admin' && '관리자 대시보드'}
+              {location.pathname === '/admin/users' && '사용자 관리'}
             </Text>
           </div>
 

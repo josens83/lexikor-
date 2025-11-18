@@ -3,6 +3,7 @@ import { Card, Row, Col, Typography, Tabs, Form, Input, Button, Space, Switch, M
 import { UserOutlined, LockOutlined, BellOutlined, SafetyOutlined, DeleteOutlined, ExclamationCircleOutlined } from '@ant-design/icons'
 import { authAPI } from '../services/api'
 import type { TabsProps } from 'antd'
+import DataExportModal from '../components/DataExportModal'
 
 const { Title, Text, Paragraph } = Typography
 
@@ -20,6 +21,7 @@ const Settings = () => {
   const [profile, setProfile] = useState<UserProfile | null>(null)
   const [loading, setLoading] = useState(false)
   const [saving, setSaving] = useState(false)
+  const [exportModalVisible, setExportModalVisible] = useState(false)
   const [profileForm] = Form.useForm()
   const [passwordForm] = Form.useForm()
   const [notificationSettings, setNotificationSettings] = useState({
@@ -138,13 +140,8 @@ const Settings = () => {
     })
   }
 
-  const handleExportData = async () => {
-    try {
-      // TODO: Implement data export API
-      message.success('데이터 내보내기가 시작되었습니다. 이메일로 다운로드 링크가 전송됩니다.')
-    } catch (error) {
-      message.error('데이터 내보내기에 실패했습니다')
-    }
+  const handleExportData = () => {
+    setExportModalVisible(true)
   }
 
   const tabItems: TabsProps['items'] = [
@@ -468,6 +465,12 @@ const Settings = () => {
           />
         </div>
       </div>
+
+      {/* Data Export Modal */}
+      <DataExportModal
+        visible={exportModalVisible}
+        onClose={() => setExportModalVisible(false)}
+      />
     </div>
   )
 }
