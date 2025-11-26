@@ -71,8 +71,10 @@ export interface ChatMessagesProps {
   messages: Message[]
   isLoading: boolean
   isSending: boolean
+  error?: Error | null
   onFeedback?: (messageId: number, rating: number) => Promise<void>
   onSuggestionClick?: (question: string) => void
+  onRetry?: () => void
 }
 
 export interface ChatInputProps {
@@ -86,7 +88,9 @@ export interface ChatInputProps {
 export interface ChatHeaderProps {
   title: string
   legalArea: LegalArea | null
+  conversationId?: number | null
   onBack?: () => void
+  onTitleChange?: (conversationId: number, newTitle: string) => Promise<void>
 }
 
 export interface MessageBubbleProps {

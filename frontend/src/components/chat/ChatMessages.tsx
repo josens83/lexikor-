@@ -3,13 +3,15 @@
  * Message list with auto-scroll, loading states, and empty state
  *
  * @module components/chat/ChatMessages
- * @lines < 90
+ * @lines < 100
  */
 
 import { useRef, useEffect } from 'react'
 import { Spin, Typography } from 'antd'
 import MessageBubble from './MessageBubble'
 import ChatEmptyState from './ChatEmptyState'
+import MessagesSkeleton from './MessagesSkeleton'
+import ChatErrorFallback from './ChatErrorFallback'
 import type { ChatMessagesProps } from '@/types/chat'
 
 const { Text } = Typography
@@ -18,8 +20,10 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({
   messages,
   isLoading,
   isSending,
+  error,
   onFeedback,
   onSuggestionClick,
+  onRetry,
 }) => {
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
@@ -28,13 +32,14 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages, isSending])
 
-  // Loading state
+  // Error state
+  if (error) {
+    return <ChatErrorFallback error={error} onRetry={onRetry} />
+  }
+
+  // Loading state with skeleton
   if (isLoading) {
-    return (
-      <div style={{ textAlign: 'center', padding: '40px' }}>
-        <Spin size="large" />
-      </div>
-    )
+    return <MessagesSkeleton count={3} />
   }
 
   // Empty state with suggestions

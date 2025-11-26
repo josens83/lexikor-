@@ -21,6 +21,7 @@ import {
   useConversationMessages,
   useSendMessage,
   useDeleteConversation,
+  useUpdateConversationTitle,
 } from '@/hooks/queries/useChat'
 import { api } from '@/services/api.refactored'
 import type { LegalArea, SendMessageRequest } from '@/types/chat'
@@ -49,9 +50,15 @@ const ChatPage: React.FC = () => {
 
   // React Query hooks
   const { data: conversations = [], isLoading: isLoadingConversations } = useConversations()
-  const { data: conversationData, isLoading: isLoadingMessages } = useConversationMessages(currentConversationId)
+  const {
+    data: conversationData,
+    isLoading: isLoadingMessages,
+    error: messagesError,
+    refetch: refetchMessages,
+  } = useConversationMessages(currentConversationId)
   const sendMessageMutation = useSendMessage()
   const deleteConversationMutation = useDeleteConversation()
+  const updateTitleMutation = useUpdateConversationTitle()
 
   // Handle window resize for responsive
   useEffect(() => {
@@ -158,6 +165,11 @@ const ChatPage: React.FC = () => {
     }
   }, [deleteConversationMutation, currentConversationId, handleNewChat])
 
+  // Handle title change
+  const handleTitleChange = useCallback(async (convId: number, newTitle: string) => {
+    await updateTitleMutation.mutateAsync({ conversationId: convId, title: newTitle })
+  }, [updateTitleMutation])
+
   // Sidebar content (reused in both Sider and Drawer)
   const sidebarContent = (
     <ChatSidebar
@@ -208,7 +220,12 @@ const ChatPage: React.FC = () => {
                   aria-label="메뉴 열기"
                 />
               )}
-              <ChatHeader title="법률 AI 어시스턴트" legalArea={legalArea} />
+              <ChatHeader
+                title={conversationData?.title || '법률 AI 어시스턴트'}
+                legalArea={legalArea}
+                conversationId={currentConversationId}
+                onTitleChange={handleTitleChange}
+              />
             </div>
           }
           style={{ height: 'calc(100vh - 112px)' }}
@@ -220,8 +237,10 @@ const ChatPage: React.FC = () => {
               messages={localMessages}
               isLoading={isLoadingMessages}
               isSending={sendMessageMutation.isPending}
+              error={messagesError as Error | null}
               onFeedback={handleFeedback}
               onSuggestionClick={handleSuggestionClick}
+              onRetry={() => refetchMessages()}
             />
           </div>
 

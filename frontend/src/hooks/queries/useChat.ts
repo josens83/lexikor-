@@ -42,6 +42,10 @@ const chatApiClient = {
     return response.data
   },
 
+  updateConversationTitle: async (conversationId: number, title: string): Promise<void> => {
+    await api.patch(`/api/v1/chat/conversations/${conversationId}`, { title })
+  },
+
   deleteConversation: async (conversationId: number): Promise<void> => {
     await api.delete(`/api/v1/chat/conversations/${conversationId}`)
   },
@@ -97,6 +101,25 @@ export function useSendMessage() {
     onError: (error: any) => {
       const errorMessage = error.response?.data?.detail || '메시지 전송에 실패했습니다'
       message.error(errorMessage)
+    },
+  })
+}
+
+/**
+ * Update conversation title mutation
+ */
+export function useUpdateConversationTitle() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: ({ conversationId, title }: { conversationId: number; title: string }) =>
+      chatApiClient.updateConversationTitle(conversationId, title),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: chatKeys.conversations() })
+      message.success('제목이 변경되었습니다')
+    },
+    onError: () => {
+      message.error('제목 변경에 실패했습니다')
     },
   })
 }
