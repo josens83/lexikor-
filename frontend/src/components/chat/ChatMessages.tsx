@@ -1,14 +1,15 @@
 /**
  * ChatMessages Component
- * Message list with auto-scroll and loading states
+ * Message list with auto-scroll, loading states, and empty state
  *
  * @module components/chat/ChatMessages
  * @lines < 90
  */
 
 import { useRef, useEffect } from 'react'
-import { Empty, Spin, Typography } from 'antd'
+import { Spin, Typography } from 'antd'
 import MessageBubble from './MessageBubble'
+import ChatEmptyState from './ChatEmptyState'
 import type { ChatMessagesProps } from '@/types/chat'
 
 const { Text } = Typography
@@ -17,6 +18,8 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({
   messages,
   isLoading,
   isSending,
+  onFeedback,
+  onSuggestionClick,
 }) => {
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
@@ -34,20 +37,9 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({
     )
   }
 
-  // Empty state
+  // Empty state with suggestions
   if (messages.length === 0) {
-    return (
-      <Empty
-        description="새로운 대화를 시작하세요"
-        image={Empty.PRESENTED_IMAGE_SIMPLE}
-        style={{ padding: '40px 0' }}
-      >
-        <Text type="secondary">
-          법률 관련 질문을 입력하시면 AI가 관련 판례와 법령을 인용하여
-          답변해드립니다.
-        </Text>
-      </Empty>
-    )
+    return <ChatEmptyState onSuggestionClick={onSuggestionClick} />
   }
 
   return (
@@ -57,6 +49,7 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({
           key={msg.id}
           message={msg}
           isLast={index === messages.length - 1}
+          onFeedback={onFeedback}
         />
       ))}
 

@@ -59,6 +59,8 @@ export interface ChatSidebarProps {
   currentConversationId: number | null
   legalArea: LegalArea | null
   isLoading: boolean
+  searchQuery?: string
+  onSearchChange?: (query: string) => void
   onSelectConversation: (id: number) => void
   onNewChat: () => void
   onDeleteConversation: (id: number) => void
@@ -69,6 +71,8 @@ export interface ChatMessagesProps {
   messages: Message[]
   isLoading: boolean
   isSending: boolean
+  onFeedback?: (messageId: number, rating: number) => Promise<void>
+  onSuggestionClick?: (question: string) => void
 }
 
 export interface ChatInputProps {
@@ -88,6 +92,7 @@ export interface ChatHeaderProps {
 export interface MessageBubbleProps {
   message: Message
   isLast?: boolean
+  onFeedback?: (messageId: number, rating: number) => Promise<void>
 }
 
 export interface ConversationItemProps {

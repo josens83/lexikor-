@@ -1,13 +1,14 @@
 /**
  * Chat Page
  * Main container for the AI legal assistant chat interface
+ * Features: Search, Feedback, Mobile responsive, Keyboard shortcuts
  *
  * @module pages/Chat
- * @lines < 150 (container orchestration)
  */
 
 import { useState, useEffect, useCallback } from 'react'
-import { Layout, Card } from 'antd'
+import { Layout, Card, Button, Drawer } from 'antd'
+import { MenuOutlined } from '@ant-design/icons'
 import { useNavigate, useParams } from 'react-router-dom'
 import {
   ChatSidebar,
@@ -21,11 +22,15 @@ import {
   useSendMessage,
   useDeleteConversation,
 } from '@/hooks/queries/useChat'
+import { api } from '@/services/api.refactored'
 import type { LegalArea, SendMessageRequest } from '@/types/chat'
 import type { Message } from '@/types'
 import { MessageRole } from '@/types'
 
 const { Sider, Content } = Layout
+
+// Breakpoint for mobile
+const MOBILE_BREAKPOINT = 768
 
 const ChatPage: React.FC = () => {
   const navigate = useNavigate()
@@ -38,12 +43,22 @@ const ChatPage: React.FC = () => {
   const [inputMessage, setInputMessage] = useState('')
   const [legalArea, setLegalArea] = useState<LegalArea | null>(null)
   const [localMessages, setLocalMessages] = useState<Message[]>([])
+  const [searchQuery, setSearchQuery] = useState('')
+  const [isMobile, setIsMobile] = useState(window.innerWidth < MOBILE_BREAKPOINT)
+  const [drawerOpen, setDrawerOpen] = useState(false)
 
   // React Query hooks
   const { data: conversations = [], isLoading: isLoadingConversations } = useConversations()
   const { data: conversationData, isLoading: isLoadingMessages } = useConversationMessages(currentConversationId)
   const sendMessageMutation = useSendMessage()
   const deleteConversationMutation = useDeleteConversation()
+
+  // Handle window resize for responsive
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < MOBILE_BREAKPOINT)
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
 
   // Sync URL param with state
   useEffect(() => {
@@ -64,14 +79,26 @@ const ChatPage: React.FC = () => {
     setCurrentConversationId(null)
     setLocalMessages([])
     setInputMessage('')
+    setDrawerOpen(false)
     navigate('/chat')
   }, [navigate])
 
   // Handle conversation selection
   const handleSelectConversation = useCallback((id: number) => {
     setCurrentConversationId(id)
+    setDrawerOpen(false)
     navigate(`/chat/${id}`)
   }, [navigate])
+
+  // Handle suggestion click from empty state
+  const handleSuggestionClick = useCallback((question: string) => {
+    setInputMessage(question)
+  }, [])
+
+  // Handle message feedback
+  const handleFeedback = useCallback(async (messageId: number, rating: number) => {
+    await api.put(`/api/v1/chat/messages/${messageId}/feedback`, { rating })
+  }, [])
 
   // Handle send message
   const handleSendMessage = useCallback(async () => {
@@ -80,7 +107,7 @@ const ChatPage: React.FC = () => {
     const userMessage = inputMessage.trim()
     setInputMessage('')
 
-    // Optimistic update - add user message immediately
+    // Optimistic update
     const tempUserMessage: Message = {
       id: Date.now(),
       role: MessageRole.USER,
@@ -100,13 +127,11 @@ const ChatPage: React.FC = () => {
 
       const response = await sendMessageMutation.mutateAsync(request)
 
-      // Update conversation ID if new conversation was created
       if (!currentConversationId && response.conversation_id) {
         setCurrentConversationId(response.conversation_id)
         navigate(`/chat/${response.conversation_id}`)
       }
 
-      // Add AI response
       const assistantMessage: Message = {
         id: response.message_id,
         role: MessageRole.ASSISTANT,
@@ -117,12 +142,10 @@ const ChatPage: React.FC = () => {
       }
 
       setLocalMessages((prev) => {
-        // Replace temp user message with actual, then add assistant message
         const filtered = prev.filter((m) => m.id !== tempUserMessage.id)
         return [...filtered, { ...tempUserMessage, id: response.message_id - 1 }, assistantMessage]
       })
     } catch {
-      // Remove optimistic message on error
       setLocalMessages((prev) => prev.filter((m) => m.id !== tempUserMessage.id))
     }
   }, [inputMessage, currentConversationId, legalArea, sendMessageMutation, navigate])
@@ -135,24 +158,59 @@ const ChatPage: React.FC = () => {
     }
   }, [deleteConversationMutation, currentConversationId, handleNewChat])
 
+  // Sidebar content (reused in both Sider and Drawer)
+  const sidebarContent = (
+    <ChatSidebar
+      conversations={conversations}
+      currentConversationId={currentConversationId}
+      legalArea={legalArea}
+      isLoading={isLoadingConversations}
+      searchQuery={searchQuery}
+      onSearchChange={setSearchQuery}
+      onSelectConversation={handleSelectConversation}
+      onNewChat={handleNewChat}
+      onDeleteConversation={handleDeleteConversation}
+      onLegalAreaChange={setLegalArea}
+    />
+  )
+
   return (
     <Layout style={{ minHeight: 'calc(100vh - 64px)', background: '#f0f2f5' }}>
-      <Sider width={300} style={{ background: '#fff', padding: '16px' }}>
-        <ChatSidebar
-          conversations={conversations}
-          currentConversationId={currentConversationId}
-          legalArea={legalArea}
-          isLoading={isLoadingConversations}
-          onSelectConversation={handleSelectConversation}
-          onNewChat={handleNewChat}
-          onDeleteConversation={handleDeleteConversation}
-          onLegalAreaChange={setLegalArea}
-        />
-      </Sider>
+      {/* Desktop Sidebar */}
+      {!isMobile && (
+        <Sider width={300} style={{ background: '#fff', padding: '16px' }}>
+          {sidebarContent}
+        </Sider>
+      )}
 
-      <Content style={{ padding: '24px' }}>
+      {/* Mobile Drawer */}
+      {isMobile && (
+        <Drawer
+          title="대화 목록"
+          placement="left"
+          open={drawerOpen}
+          onClose={() => setDrawerOpen(false)}
+          width={300}
+        >
+          {sidebarContent}
+        </Drawer>
+      )}
+
+      <Content style={{ padding: isMobile ? '12px' : '24px' }}>
         <Card
-          title={<ChatHeader title="법률 AI 어시스턴트" legalArea={legalArea} />}
+          title={
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              {isMobile && (
+                <Button
+                  type="text"
+                  icon={<MenuOutlined />}
+                  onClick={() => setDrawerOpen(true)}
+                  aria-label="메뉴 열기"
+                />
+              )}
+              <ChatHeader title="법률 AI 어시스턴트" legalArea={legalArea} />
+            </div>
+          }
           style={{ height: 'calc(100vh - 112px)' }}
           styles={{ body: { height: 'calc(100% - 72px)', display: 'flex', flexDirection: 'column' }}}
         >
@@ -162,6 +220,8 @@ const ChatPage: React.FC = () => {
               messages={localMessages}
               isLoading={isLoadingMessages}
               isSending={sendMessageMutation.isPending}
+              onFeedback={handleFeedback}
+              onSuggestionClick={handleSuggestionClick}
             />
           </div>
 
