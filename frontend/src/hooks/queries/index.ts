@@ -22,11 +22,10 @@ export {
 export {
   chatKeys,
   useConversations,
-  useConversation,
-  useCreateConversation,
+  useConversationMessages,
   useSendMessage,
-  useUpdateMessageFeedback,
   useDeleteConversation,
+  useChat,
 } from './useChat'
 
 // Documents hooks

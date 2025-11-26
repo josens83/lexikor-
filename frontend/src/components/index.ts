@@ -18,6 +18,9 @@ export * from './billing'
 // Research Components
 export * from './research'
 
+// Chat Components
+export * from './chat'
+
 // Existing Components
 export { default as DataExportModal } from './DataExportModal'
 export { default as ErrorBoundary } from './ErrorBoundary'
