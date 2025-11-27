@@ -24,6 +24,7 @@ export {
   useConversations,
   useConversationMessages,
   useSendMessage,
+  useUpdateConversationTitle,
   useDeleteConversation,
   useChat,
 } from './useChat'
