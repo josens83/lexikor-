@@ -1,24 +1,29 @@
 /**
  * MessageBubble Component
- * Individual chat message with markdown support, citations, and feedback
+ * Individual chat message with markdown, citations, timestamps, and feedback
  *
  * @module components/chat/MessageBubble
  * @lines < 100
  */
 
-import { Space, Avatar, Typography } from 'antd'
+import { Space, Avatar } from 'antd'
 import { RobotOutlined, UserOutlined } from '@ant-design/icons'
 import ReactMarkdown from 'react-markdown'
 import MessageFeedback from './MessageFeedback'
+import CitationCard from './CitationCard'
+import MessageTimestamp from './MessageTimestamp'
+import MessageRetry from './MessageRetry'
 import type { MessageBubbleProps } from '@/types/chat'
 import { MessageRole } from '@/types'
-
-const { Text } = Typography
 
 const MessageBubble: React.FC<MessageBubbleProps> = ({
   message,
   isLast,
   onFeedback,
+  isFailed,
+  onRetry,
+  onDelete,
+  isRetrying,
 }) => {
   const isUser = message.role === MessageRole.USER
   const isAssistant = message.role === MessageRole.ASSISTANT
@@ -28,7 +33,7 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({
       style={{
         display: 'flex',
         justifyContent: isUser ? 'flex-end' : 'flex-start',
-        marginBottom: '16px',
+        marginBottom: 16,
       }}
     >
       <Space align="start" size="middle" style={{ maxWidth: '80%' }}>
@@ -43,37 +48,35 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({
             style={{
               background: isUser ? '#e6f7ff' : '#f6f6f6',
               padding: '12px 16px',
-              borderRadius: '12px',
+              borderRadius: 12,
               borderLeft: `3px solid ${isUser ? '#1890ff' : '#52c41a'}`,
+              opacity: isFailed ? 0.7 : 1,
             }}
           >
             <ReactMarkdown>{message.content}</ReactMarkdown>
 
-            {/* Citations */}
+            {/* Citations with enhanced UI */}
             {message.citations && message.citations.length > 0 && (
-              <div
-                style={{
-                  marginTop: '12px',
-                  paddingTop: '12px',
-                  borderTop: '1px solid #d9d9d9',
-                }}
-              >
-                <Text type="secondary" strong>
-                  출처:
-                </Text>
-                {message.citations.map((citation, idx) => (
-                  <div key={idx} style={{ marginTop: '4px' }}>
-                    <Text type="secondary">
-                      • {citation.reference || citation.title}
-                    </Text>
-                  </div>
-                ))}
-              </div>
+              <CitationCard citations={message.citations} />
             )}
           </div>
 
+          {/* Timestamp */}
+          <div style={{ marginTop: 4, textAlign: isUser ? 'right' : 'left' }}>
+            <MessageTimestamp timestamp={message.created_at} />
+          </div>
+
+          {/* Failed message retry */}
+          {isFailed && onRetry && onDelete && (
+            <MessageRetry
+              onRetry={onRetry}
+              onDelete={onDelete}
+              isRetrying={isRetrying}
+            />
+          )}
+
           {/* Feedback for AI messages */}
-          {isAssistant && (
+          {isAssistant && !isFailed && (
             <MessageFeedback
               messageId={message.id}
               initialRating={message.rating}

@@ -96,7 +96,11 @@ export interface ChatHeaderProps {
 export interface MessageBubbleProps {
   message: Message
   isLast?: boolean
+  isFailed?: boolean
+  isRetrying?: boolean
   onFeedback?: (messageId: number, rating: number) => Promise<void>
+  onRetry?: () => void
+  onDelete?: () => void
 }
 
 export interface ConversationItemProps {

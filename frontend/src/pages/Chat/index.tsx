@@ -15,6 +15,7 @@ import {
   ChatHeader,
   ChatMessages,
   ChatInput,
+  ConversationExport,
 } from '@/components/chat'
 import {
   useConversations,
@@ -227,6 +228,13 @@ const ChatPage: React.FC = () => {
                 onTitleChange={handleTitleChange}
               />
             </div>
+          }
+          extra={
+            <ConversationExport
+              messages={localMessages}
+              conversationTitle={conversationData?.title || '대화 내역'}
+              disabled={sendMessageMutation.isPending}
+            />
           }
           style={{ height: 'calc(100vh - 112px)' }}
           styles={{ body: { height: 'calc(100% - 72px)', display: 'flex', flexDirection: 'column' }}}
