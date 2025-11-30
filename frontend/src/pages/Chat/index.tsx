@@ -1,14 +1,14 @@
 /**
  * Chat Page
  * Main container for the AI legal assistant chat interface
- * Features: Search, Feedback, Mobile responsive, Keyboard shortcuts
+ * Features: Search, Feedback, Mobile responsive, Keyboard shortcuts, Dark mode, File attachment
  *
  * @module pages/Chat
  */
 
 import { useState, useEffect, useCallback } from 'react'
-import { Layout, Card, Button, Drawer } from 'antd'
-import { MenuOutlined } from '@ant-design/icons'
+import { Layout, Card, Button, Drawer, Space, Collapse } from 'antd'
+import { MenuOutlined, PaperClipOutlined } from '@ant-design/icons'
 import { useNavigate, useParams } from 'react-router-dom'
 import {
   ChatSidebar,
@@ -16,6 +16,9 @@ import {
   ChatMessages,
   ChatInput,
   ConversationExport,
+  ThemeToggle,
+  FileAttachment,
+  type AttachedFile,
 } from '@/components/chat'
 import {
   useConversations,
@@ -48,6 +51,8 @@ const ChatPage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('')
   const [isMobile, setIsMobile] = useState(window.innerWidth < MOBILE_BREAKPOINT)
   const [drawerOpen, setDrawerOpen] = useState(false)
+  const [attachedFiles, setAttachedFiles] = useState<AttachedFile[]>([])
+  const [showFileAttachment, setShowFileAttachment] = useState(false)
 
   // React Query hooks
   const { data: conversations = [], isLoading: isLoadingConversations } = useConversations()
@@ -230,11 +235,14 @@ const ChatPage: React.FC = () => {
             </div>
           }
           extra={
-            <ConversationExport
-              messages={localMessages}
-              conversationTitle={conversationData?.title || '대화 내역'}
-              disabled={sendMessageMutation.isPending}
-            />
+            <Space>
+              <ThemeToggle />
+              <ConversationExport
+                messages={localMessages}
+                conversationTitle={conversationData?.title || '대화 내역'}
+                disabled={sendMessageMutation.isPending}
+              />
+            </Space>
           }
           style={{ height: 'calc(100vh - 112px)' }}
           styles={{ body: { height: 'calc(100% - 72px)', display: 'flex', flexDirection: 'column' }}}
@@ -252,14 +260,35 @@ const ChatPage: React.FC = () => {
             />
           </div>
 
+          {/* File Attachment Area */}
+          {showFileAttachment && (
+            <div style={{ marginBottom: 8 }}>
+              <FileAttachment
+                files={attachedFiles}
+                onFilesChange={setAttachedFiles}
+                disabled={sendMessageMutation.isPending}
+              />
+            </div>
+          )}
+
           {/* Input Area */}
-          <ChatInput
-            value={inputMessage}
-            isSending={sendMessageMutation.isPending}
-            disabled={false}
-            onChange={setInputMessage}
-            onSend={handleSendMessage}
-          />
+          <div style={{ display: 'flex', gap: 8, alignItems: 'flex-end' }}>
+            <Button
+              type="text"
+              icon={<PaperClipOutlined />}
+              onClick={() => setShowFileAttachment(!showFileAttachment)}
+              aria-label="파일 첨부"
+            />
+            <div style={{ flex: 1 }}>
+              <ChatInput
+                value={inputMessage}
+                isSending={sendMessageMutation.isPending}
+                disabled={false}
+                onChange={setInputMessage}
+                onSend={handleSendMessage}
+              />
+            </div>
+          </div>
         </Card>
       </Content>
     </Layout>
