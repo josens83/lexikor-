@@ -1,11 +1,13 @@
 /**
  * MessageBubble Component
  * Individual chat message with markdown, citations, timestamps, and feedback
+ * Memoized for performance optimization
  *
  * @module components/chat/MessageBubble
  * @lines < 100
  */
 
+import { memo } from 'react'
 import { Space, Avatar } from 'antd'
 import { RobotOutlined, UserOutlined } from '@ant-design/icons'
 import ReactMarkdown from 'react-markdown'
@@ -16,7 +18,7 @@ import MessageRetry from './MessageRetry'
 import type { MessageBubbleProps } from '@/types/chat'
 import { MessageRole } from '@/types'
 
-const MessageBubble: React.FC<MessageBubbleProps> = ({
+const MessageBubble: React.FC<MessageBubbleProps> = memo(({
   message,
   isLast,
   onFeedback,
@@ -94,6 +96,8 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({
       </Space>
     </div>
   )
-}
+})
+
+MessageBubble.displayName = 'MessageBubble'
 
 export default MessageBubble

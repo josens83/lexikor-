@@ -92,3 +92,108 @@ body {
     transform: scale(1);
   }
 }
+
+/* Dark Mode Support */
+[data-theme="dark"] {
+  color-scheme: dark;
+}
+
+.dark-mode .ant-layout {
+  background: #141414;
+}
+
+.dark-mode .ant-card {
+  background: #1f1f1f;
+  border-color: #303030;
+}
+
+.dark-mode .ant-card-head {
+  background: #1f1f1f;
+  border-color: #303030;
+}
+
+.dark-mode .message-user {
+  background-color: #111d2c;
+  border-left-color: #177ddc;
+}
+
+.dark-mode .message-assistant {
+  background-color: #1a1a1a;
+  border-left-color: #49aa19;
+}
+
+.dark-mode .ant-input,
+.dark-mode .ant-input-affix-wrapper {
+  background: #1f1f1f;
+  border-color: #303030;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.dark-mode .ant-btn-default {
+  background: #1f1f1f;
+  border-color: #303030;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.dark-mode .ant-drawer-content {
+  background: #1f1f1f;
+}
+
+.dark-mode .ant-drawer-header {
+  background: #1f1f1f;
+  border-color: #303030;
+}
+
+.dark-mode .ant-typography {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.dark-mode .ant-typography.ant-typography-secondary {
+  color: rgba(255, 255, 255, 0.45);
+}
+
+/* Accessibility: Screen reader only class */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Accessibility: Skip link for keyboard navigation */
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background: #1890ff;
+  color: white;
+  padding: 8px 16px;
+  z-index: 100;
+  text-decoration: none;
+}
+
+.skip-link:focus {
+  top: 0;
+}
+
+/* Focus visible for keyboard users */
+*:focus-visible {
+  outline: 2px solid #1890ff;
+  outline-offset: 2px;
+}
+
+/* Reduced motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
