@@ -26,7 +26,10 @@ export {
   useSendMessage,
   useUpdateConversationTitle,
   useDeleteConversation,
+  useFileUpload,
+  useFilesUpload,
   useChat,
+  type UploadedFile,
 } from './useChat'
 
 // Documents hooks
