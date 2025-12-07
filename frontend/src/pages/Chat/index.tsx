@@ -21,6 +21,7 @@ import {
   StreamingMessage,
   ScrollToBottom,
   type AttachedFile,
+  type ChatInputRef,
 } from '@/components/chat'
 import { useStreamingResponse, useKeyboardShortcuts, CHAT_SHORTCUTS } from '@/hooks'
 import {
@@ -59,7 +60,7 @@ const ChatPage: React.FC = () => {
   const [useStreaming, setUseStreaming] = useState(true)
   const [showScrollButton, setShowScrollButton] = useState(false)
   const messagesContainerRef = useRef<HTMLDivElement>(null)
-  const inputRef = useRef<HTMLTextAreaElement>(null)
+  const inputRef = useRef<ChatInputRef>(null)
 
   // React Query hooks
   const { data: conversations = [], isLoading: isLoadingConversations } = useConversations()
@@ -399,6 +400,7 @@ const ChatPage: React.FC = () => {
             </Badge>
             <div style={{ flex: 1 }}>
               <ChatInput
+                ref={inputRef}
                 value={inputMessage}
                 isSending={sendMessageMutation.isPending || isStreaming}
                 disabled={isStreaming}

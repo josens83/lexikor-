@@ -6,21 +6,31 @@
  * @lines < 80
  */
 
-import { useRef } from 'react'
+import { useRef, forwardRef, useImperativeHandle } from 'react'
 import { Input, Button, Space, Tooltip } from 'antd'
 import { SendOutlined } from '@ant-design/icons'
 import type { ChatInputProps } from '@/types/chat'
 
 const { TextArea } = Input
 
-const ChatInput: React.FC<ChatInputProps> = ({
+export interface ChatInputRef {
+  focus: () => void
+  blur: () => void
+}
+
+const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(({
   value,
   isSending,
   disabled,
   onChange,
   onSend,
-}) => {
+}, ref) => {
   const textAreaRef = useRef<any>(null)
+
+  useImperativeHandle(ref, () => ({
+    focus: () => textAreaRef.current?.focus(),
+    blur: () => textAreaRef.current?.blur(),
+  }))
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     // Enter without shift = send
@@ -72,6 +82,8 @@ const ChatInput: React.FC<ChatInputProps> = ({
       </Button>
     </Space.Compact>
   )
-}
+})
+
+ChatInput.displayName = 'ChatInput'
 
 export default ChatInput
