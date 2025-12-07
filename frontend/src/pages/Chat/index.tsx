@@ -7,7 +7,7 @@
  */
 
 import { useState, useEffect, useCallback } from 'react'
-import { Layout, Card, Button, Drawer, Space, Collapse } from 'antd'
+import { Layout, Card, Button, Drawer, Space, Badge } from 'antd'
 import { MenuOutlined, PaperClipOutlined } from '@ant-design/icons'
 import { useNavigate, useParams } from 'react-router-dom'
 import {
@@ -118,13 +118,23 @@ const ChatPage: React.FC = () => {
     if (!inputMessage.trim() || sendMessageMutation.isPending) return
 
     const userMessage = inputMessage.trim()
+    const filesToSend = [...attachedFiles]
+
+    // Clear input and files
     setInputMessage('')
+    setAttachedFiles([])
+    setShowFileAttachment(false)
+
+    // Build message with file info
+    const messageWithFiles = filesToSend.length > 0
+      ? `${userMessage}\n\n[첨부 파일: ${filesToSend.map(f => f.name).join(', ')}]`
+      : userMessage
 
     // Optimistic update
     const tempUserMessage: Message = {
       id: Date.now(),
       role: MessageRole.USER,
-      content: userMessage,
+      content: messageWithFiles,
       conversation_id: currentConversationId || 0,
       created_at: new Date().toISOString(),
     }
@@ -160,8 +170,10 @@ const ChatPage: React.FC = () => {
       })
     } catch {
       setLocalMessages((prev) => prev.filter((m) => m.id !== tempUserMessage.id))
+      // Restore files on error
+      setAttachedFiles(filesToSend)
     }
-  }, [inputMessage, currentConversationId, legalArea, sendMessageMutation, navigate])
+  }, [inputMessage, attachedFiles, currentConversationId, legalArea, sendMessageMutation, navigate])
 
   // Handle delete conversation
   const handleDeleteConversation = useCallback(async (id: number) => {
@@ -273,12 +285,14 @@ const ChatPage: React.FC = () => {
 
           {/* Input Area */}
           <div style={{ display: 'flex', gap: 8, alignItems: 'flex-end' }}>
-            <Button
-              type="text"
-              icon={<PaperClipOutlined />}
-              onClick={() => setShowFileAttachment(!showFileAttachment)}
-              aria-label="파일 첨부"
-            />
+            <Badge count={attachedFiles.length} size="small">
+              <Button
+                type={showFileAttachment ? 'primary' : 'text'}
+                icon={<PaperClipOutlined />}
+                onClick={() => setShowFileAttachment(!showFileAttachment)}
+                aria-label={`파일 첨부 (${attachedFiles.length}개 선택됨)`}
+              />
+            </Badge>
             <div style={{ flex: 1 }}>
               <ChatInput
                 value={inputMessage}
