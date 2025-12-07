@@ -6,7 +6,7 @@
  * @module pages/Chat
  */
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { Layout, Card, Button, Drawer, Space, Badge } from 'antd'
 import { MenuOutlined, PaperClipOutlined } from '@ant-design/icons'
 import { useNavigate, useParams } from 'react-router-dom'
@@ -19,9 +19,10 @@ import {
   ThemeToggle,
   FileAttachment,
   StreamingMessage,
+  ScrollToBottom,
   type AttachedFile,
 } from '@/components/chat'
-import { useStreamingResponse } from '@/hooks'
+import { useStreamingResponse, useKeyboardShortcuts, CHAT_SHORTCUTS } from '@/hooks'
 import {
   useConversations,
   useConversationMessages,
@@ -56,6 +57,9 @@ const ChatPage: React.FC = () => {
   const [attachedFiles, setAttachedFiles] = useState<AttachedFile[]>([])
   const [showFileAttachment, setShowFileAttachment] = useState(false)
   const [useStreaming, setUseStreaming] = useState(true)
+  const [showScrollButton, setShowScrollButton] = useState(false)
+  const messagesContainerRef = useRef<HTMLDivElement>(null)
+  const inputRef = useRef<HTMLTextAreaElement>(null)
 
   // React Query hooks
   const { data: conversations = [], isLoading: isLoadingConversations } = useConversations()
@@ -120,6 +124,38 @@ const ChatPage: React.FC = () => {
       setLocalMessages(conversationData.messages)
     }
   }, [conversationData])
+
+  // Auto-scroll to bottom when new messages arrive
+  useEffect(() => {
+    if (messagesContainerRef.current && (localMessages.length > 0 || isStreaming)) {
+      const container = messagesContainerRef.current
+      container.scrollTop = container.scrollHeight
+    }
+  }, [localMessages, isStreaming, streamingContent])
+
+  // Handle scroll visibility
+  const handleScroll = useCallback(() => {
+    if (messagesContainerRef.current) {
+      const { scrollTop, scrollHeight, clientHeight } = messagesContainerRef.current
+      const isNearBottom = scrollHeight - scrollTop - clientHeight < 100
+      setShowScrollButton(!isNearBottom)
+    }
+  }, [])
+
+  // Scroll to bottom handler
+  const scrollToBottom = useCallback(() => {
+    if (messagesContainerRef.current) {
+      messagesContainerRef.current.scrollTo({
+        top: messagesContainerRef.current.scrollHeight,
+        behavior: 'smooth',
+      })
+    }
+  }, [])
+
+  // Focus input handler
+  const focusInput = useCallback(() => {
+    inputRef.current?.focus()
+  }, [])
 
   // Handle new chat
   const handleNewChat = useCallback(() => {
@@ -229,6 +265,16 @@ const ChatPage: React.FC = () => {
     await updateTitleMutation.mutateAsync({ conversationId: convId, title: newTitle })
   }, [updateTitleMutation])
 
+  // Keyboard shortcuts
+  useKeyboardShortcuts({
+    enabled: true,
+    shortcuts: [
+      { ...CHAT_SHORTCUTS.NEW_CHAT, handler: handleNewChat },
+      { ...CHAT_SHORTCUTS.CANCEL, handler: stopStreaming },
+      { key: '/', handler: focusInput },
+    ],
+  })
+
   // Sidebar content (reused in both Sider and Drawer)
   const sidebarContent = (
     <ChatSidebar
@@ -301,7 +347,11 @@ const ChatPage: React.FC = () => {
           styles={{ body: { height: 'calc(100% - 72px)', display: 'flex', flexDirection: 'column' }}}
         >
           {/* Messages Area */}
-          <div style={{ flex: 1, overflowY: 'auto', padding: '16px 0', marginBottom: '16px' }}>
+          <div
+            ref={messagesContainerRef}
+            onScroll={handleScroll}
+            style={{ flex: 1, overflowY: 'auto', padding: '16px 0', marginBottom: '16px', position: 'relative' }}
+          >
             <ChatMessages
               messages={localMessages}
               isLoading={isLoadingMessages}
@@ -319,6 +369,11 @@ const ChatPage: React.FC = () => {
                 onStop={stopStreaming}
               />
             )}
+            {/* Scroll to bottom button */}
+            <ScrollToBottom
+              visible={showScrollButton}
+              onClick={scrollToBottom}
+            />
           </div>
 
           {/* File Attachment Area */}
