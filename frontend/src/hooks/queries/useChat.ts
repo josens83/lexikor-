@@ -9,7 +9,19 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { message } from 'antd'
 import { api } from '@services/api.refactored'
 import type { Message, Conversation } from '@/types'
-import type { SendMessageRequest, SendMessageResponse, LegalArea } from '@/types/chat'
+import type { SendMessageRequest, SendMessageResponse } from '@/types/chat'
+
+// ============================================================================
+// Types
+// ============================================================================
+
+export interface UploadedFile {
+  id: number
+  name: string
+  size: number
+  type: string
+  url: string
+}
 
 // ============================================================================
 // Query Keys
@@ -29,6 +41,24 @@ export const chatKeys = {
 const chatApiClient = {
   getConversations: async (): Promise<Conversation[]> => {
     const response = await api.get('/api/v1/chat/conversations')
+    return response.data
+  },
+
+  uploadFile: async (file: File): Promise<UploadedFile> => {
+    const formData = new FormData()
+    formData.append('file', file)
+    const response = await api.post('/api/v1/chat/upload', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    })
+    return response.data
+  },
+
+  uploadFiles: async (files: File[]): Promise<UploadedFile[]> => {
+    const formData = new FormData()
+    files.forEach((file) => formData.append('files', file))
+    const response = await api.post('/api/v1/chat/upload-multiple', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    })
     return response.data
   },
 
@@ -138,6 +168,32 @@ export function useDeleteConversation() {
     },
     onError: () => {
       message.error('대화 삭제에 실패했습니다')
+    },
+  })
+}
+
+/**
+ * Upload single file mutation
+ */
+export function useFileUpload() {
+  return useMutation({
+    mutationFn: chatApiClient.uploadFile,
+    onError: (error: any) => {
+      const errorMessage = error.response?.data?.detail || '파일 업로드에 실패했습니다'
+      message.error(errorMessage)
+    },
+  })
+}
+
+/**
+ * Upload multiple files mutation
+ */
+export function useFilesUpload() {
+  return useMutation({
+    mutationFn: chatApiClient.uploadFiles,
+    onError: (error: any) => {
+      const errorMessage = error.response?.data?.detail || '파일 업로드에 실패했습니다'
+      message.error(errorMessage)
     },
   })
 }

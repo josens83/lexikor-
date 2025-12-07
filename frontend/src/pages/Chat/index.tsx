@@ -18,8 +18,10 @@ import {
   ConversationExport,
   ThemeToggle,
   FileAttachment,
+  StreamingMessage,
   type AttachedFile,
 } from '@/components/chat'
+import { useStreamingResponse } from '@/hooks'
 import {
   useConversations,
   useConversationMessages,
@@ -53,6 +55,7 @@ const ChatPage: React.FC = () => {
   const [drawerOpen, setDrawerOpen] = useState(false)
   const [attachedFiles, setAttachedFiles] = useState<AttachedFile[]>([])
   const [showFileAttachment, setShowFileAttachment] = useState(false)
+  const [useStreaming, setUseStreaming] = useState(true)
 
   // React Query hooks
   const { data: conversations = [], isLoading: isLoadingConversations } = useConversations()
@@ -65,6 +68,37 @@ const ChatPage: React.FC = () => {
   const sendMessageMutation = useSendMessage()
   const deleteConversationMutation = useDeleteConversation()
   const updateTitleMutation = useUpdateConversationTitle()
+
+  // Streaming response hook
+  const {
+    content: streamingContent,
+    isStreaming,
+    startStreaming,
+    stopStreaming,
+    reset: resetStreaming,
+  } = useStreamingResponse({
+    onComplete: (content, convId, msgId) => {
+      // Add the completed message to local messages
+      const assistantMessage: Message = {
+        id: msgId,
+        role: MessageRole.ASSISTANT,
+        content,
+        conversation_id: convId,
+        created_at: new Date().toISOString(),
+      }
+      setLocalMessages((prev) => [...prev, assistantMessage])
+      resetStreaming()
+
+      // Update conversation ID if new
+      if (!currentConversationId && convId) {
+        setCurrentConversationId(convId)
+        navigate(`/chat/${convId}`)
+      }
+    },
+    onError: () => {
+      resetStreaming()
+    },
+  })
 
   // Handle window resize for responsive
   useEffect(() => {
@@ -115,7 +149,7 @@ const ChatPage: React.FC = () => {
 
   // Handle send message
   const handleSendMessage = useCallback(async () => {
-    if (!inputMessage.trim() || sendMessageMutation.isPending) return
+    if (!inputMessage.trim() || sendMessageMutation.isPending || isStreaming) return
 
     const userMessage = inputMessage.trim()
     const filesToSend = [...attachedFiles]
@@ -130,7 +164,7 @@ const ChatPage: React.FC = () => {
       ? `${userMessage}\n\n[첨부 파일: ${filesToSend.map(f => f.name).join(', ')}]`
       : userMessage
 
-    // Optimistic update
+    // Optimistic update - add user message
     const tempUserMessage: Message = {
       id: Date.now(),
       role: MessageRole.USER,
@@ -140,6 +174,13 @@ const ChatPage: React.FC = () => {
     }
     setLocalMessages((prev) => [...prev, tempUserMessage])
 
+    // Use streaming if enabled
+    if (useStreaming) {
+      startStreaming(userMessage, currentConversationId, legalArea)
+      return
+    }
+
+    // Non-streaming mode
     try {
       const request: SendMessageRequest = {
         message: userMessage,
@@ -173,7 +214,7 @@ const ChatPage: React.FC = () => {
       // Restore files on error
       setAttachedFiles(filesToSend)
     }
-  }, [inputMessage, attachedFiles, currentConversationId, legalArea, sendMessageMutation, navigate])
+  }, [inputMessage, attachedFiles, currentConversationId, legalArea, sendMessageMutation, navigate, useStreaming, isStreaming, startStreaming])
 
   // Handle delete conversation
   const handleDeleteConversation = useCallback(async (id: number) => {
@@ -264,12 +305,20 @@ const ChatPage: React.FC = () => {
             <ChatMessages
               messages={localMessages}
               isLoading={isLoadingMessages}
-              isSending={sendMessageMutation.isPending}
+              isSending={sendMessageMutation.isPending && !useStreaming}
               error={messagesError as Error | null}
               onFeedback={handleFeedback}
               onSuggestionClick={handleSuggestionClick}
               onRetry={() => refetchMessages()}
             />
+            {/* Streaming message display */}
+            {isStreaming && (
+              <StreamingMessage
+                content={streamingContent}
+                isStreaming={isStreaming}
+                onStop={stopStreaming}
+              />
+            )}
           </div>
 
           {/* File Attachment Area */}
@@ -296,8 +345,8 @@ const ChatPage: React.FC = () => {
             <div style={{ flex: 1 }}>
               <ChatInput
                 value={inputMessage}
-                isSending={sendMessageMutation.isPending}
-                disabled={false}
+                isSending={sendMessageMutation.isPending || isStreaming}
+                disabled={isStreaming}
                 onChange={setInputMessage}
                 onSend={handleSendMessage}
               />
